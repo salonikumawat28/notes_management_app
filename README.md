@@ -12,6 +12,7 @@ npx create-react-app client
 Express.js is utilized for the Backend of the notes application. The application skeleton is generated using the following command:
 ```
 npx express-generator server
+npm install
 ```
 
 # Important Concepts
@@ -20,3 +21,8 @@ To change the listening port of the server in Express.js, go to `bin -> www` and
 ```
 var port = normalizePort(process.env.PORT || '9000');
 ```
+## Node package manager (npm)
+It is the package manager for Node.js, and it is used to manage and install third-party packages (libraries, modules, etc.) that your application depends on.
+
+## .gitignore
+There are lot of files which you don't want to part of git. Example: generated files, installed node modules etc. Such files can be added to .gitignore file and now these files will not be picked by git while commit, push etc.
