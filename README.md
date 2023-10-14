@@ -16,9 +16,15 @@ npm install
 ```
 
 # Architecture
-## Server
-### Generic steps for handling an API call
-Handling an API call involves a series of well-defined steps to ensure a smooth and secure interaction between the client and the server. Here's a breakdown of the generic steps involved:
+## Server API
+### API Router
+URL router contains simple URLs and routes them to appropriate controller methods.
+For example:
+```
+router.post('/', usersController.createUser);
+```
+### API Controller
+Controller of an API involves a series of well-defined steps. Here's a breakdown of the generic steps involved in an API controller:
 1. Validation:
 - Input Validation: Validate the request, including URL parameters, query parameters, and the request body to ensure the input data meets the expected format.
 - Error Handling: If validation fails, send error message with error status code. 
@@ -30,13 +36,18 @@ Handling an API call involves a series of well-defined steps to ensure a smooth 
 
 3. Data transformation for Database: Transform the valdiated input data to a format which is comptabile with the database.
 
-4. Database operation - Perform database operations like CRUD as required.
+4. Call Model layer to perform CRUD operations
 
 5. Data transformation for API response: Transform the database response to a format which is compatible with the API response.
 
 6. Handle successful response: If API response is successful one, return with success code.
 
 7. Handle failed response: If there were any errors while fetching API response or if the response itself is the failed one, send error response with proper message and response code.
+
+### API Model layer
+Model layer of an API does following:
+1. Perform (multiple) database CRUD operations.
+2. Process the data: Process the data from database so that we can compute the response which controller wants.
 
 ### Server API
 Backend server API contains URLs via which clients can communicate with it. Few generic rules which we are following for server API are:
