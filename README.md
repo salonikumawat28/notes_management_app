@@ -66,6 +66,7 @@ There are lot of files which you don't want to part of git. Example: generated f
 ## Curl commands
 Below are samples of CURl commands for server API:
 
+### User API
 1. To get all users,
 ```
 curl -X GET http://localhost:9000/users
@@ -90,4 +91,3 @@ curl -X PUT http://localhost:9000/users/3 -H 'Content-Type: application/json' -d
 ```
 curl -X DELETE http://localhost:9000/users/3
 ```
-#
