@@ -33,10 +33,9 @@ function createUser(req, res, next) {
     res.status(201).json(newUser);
 }
 
-/*  Update the user with new user data. 
-* Note: Put method entirely replaces existing user data with new user data.
+/*  Replace the user with new user data. 
 */
-function updateUser(req, res, next) {
+function replaceUser(req, res, next) {
     const userId = parseInt(req.params.id);
     const user = users.get(userId);
     if (!user) {
@@ -56,9 +55,8 @@ function updateUser(req, res, next) {
 }
 
 /* Update the user with new user data.
-* Note: Patch method merges the new user data with existing user data.
 */
-function updateUserInfo(req, res, next) {
+function updateUser(req, res, next) {
     const userId = parseInt(req.params.id);
     const user = users.get(userId);
     if (!user) {
@@ -99,7 +97,7 @@ const usersController = {
     getUser,
     createUser,
     updateUser,
-    updateUserInfo,
+    replaceUser,
     deleteUser
 }
 

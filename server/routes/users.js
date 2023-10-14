@@ -14,12 +14,12 @@ router.post('/', usersController.createUser);
 /*  Update the user with new user data. 
 * Note: Put method entirely replaces existing user data with new user data.
 */
-router.put('/:id', usersController.updateUser);
+router.put('/:id', usersController.replaceUser);
 
 /* Update the user with new user data.
 * Note: Patch method merges the new user data with existing user data.
 */
-router.patch('/:id', usersController.updateUserInfo);
+router.patch('/:id', usersController.updateUser);
 
 /* Delets a user by ID. */
 router.delete('/:id', usersController.deleteUser);
