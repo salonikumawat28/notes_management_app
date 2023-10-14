@@ -47,9 +47,17 @@ Here are few APIs which server has:
 1. Get all users - URL: `/users`, HTTP method: GET, HTTP response: array of users
 2. Get a user - URL: `/users/:id`, HTTP method: GET, HTTP response: requested user 
 3. Create a new user - URL: `/users`, HTTP method: POST, HTTP request: user to be created, HTTP response: created user
-4. Update the entire user - URL: `/users/:id`, HTTP method: PUT, HTTP request: user to be replaced, HTTP response: replaced user
-5. Update the user partially - URL: `/users/:id`, HTTP method: PATCH, HTTP request: user to be updated, HTTP response: updated user
+4. Replace the entire user - URL: `/users/:id`, HTTP method: PUT, HTTP request: user to be replaced, HTTP response: replaced user
+5. Update the user - URL: `/users/:id`, HTTP method: PATCH, HTTP request: user to be updated, HTTP response: updated user
 6. Delete the user - URL: `/users/:id`, HTTP method: DELETE, HTTP response: deletion status
+
+#### Notes API
+1. Get all notes - URL: `/notes`, HTTP method: GET, HTTP response: array of notes
+2. Get a note - URL: `/notes/:id`, HTTP method: GET, HTTP response: requested note 
+3. Create a new note - URL: `/notes`, HTTP method: POST, HTTP request: note to be created, HTTP response: created note
+4. Replace the entire note - URL: `/notes/:id`, HTTP method: PUT, HTTP request: note to be replaced, HTTP response: replaced note
+5. Update the note - URL: `/notes/:id`, HTTP method: PATCH, HTTP request: note to be updated, HTTP response: updated note
+6. Delete the note - URL: `/notes/:id`, HTTP method: DELETE, HTTP response: deletion status
 
 # Important Concepts
 ## How to change listening port in Express.js
