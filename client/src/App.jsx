@@ -1,11 +1,11 @@
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthContextProvider } from './contexts/AuthContext';
 import NotesMangementApp from './NotesManagementApp';
 
 function App() {
   return (
-    <AuthProvider>
+    <AuthContextProvider>
         <NotesMangementApp />
-    </AuthProvider>
+    </AuthContextProvider>
   );
 }
 
