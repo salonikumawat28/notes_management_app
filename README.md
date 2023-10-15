@@ -111,6 +111,11 @@ curl -X PUT http://localhost:9000/users/3 -H 'Content-Type: application/json' -d
 curl -X DELETE http://localhost:9000/users/3
 ```
 
+# Data persistence in Frontend
+There are scenarios when we need to persist data in the local storage of user. Example: when user is logged in, we want to persist this information so that if user refreshes the tab or reopens the tab, then user is stll loggedin.
+
+We can use `localStorage` for this. It has `getItem` and `setItem` to persist the values.
+
 # React concepts
 ## React component - sttributes and child elements
 A custom React component can have attributes and child elements as well. Example:
