@@ -1,10 +1,11 @@
-import LoginPage from './pages/LoginPage';
+import { AuthProvider } from './contexts/AuthContext';
+import NotesMangementApp from './NotesManagementApp';
 
 function App() {
   return (
-    <div>
-      <LoginPage />
-    </div>
+    <AuthProvider>
+        <NotesMangementApp />
+    </AuthProvider>
   );
 }
 
