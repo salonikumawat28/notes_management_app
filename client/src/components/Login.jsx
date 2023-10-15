@@ -1,4 +1,12 @@
+import { useAuthContext } from "../contexts/AuthContext";
+
 function Login() {
+    const {setIsLoggedIn} = useAuthContext();
+
+    function login() {
+        setIsLoggedIn(true);
+    }
+
     return (
         <div>
             <div>
@@ -6,7 +14,7 @@ function Login() {
             </div>
             <div>
                 <h2>Login Page</h2>
-                <form>
+                <form onSubmit={login}>
                     <div>
                         <label htmlFor="username">Username:</label>
                         <input
