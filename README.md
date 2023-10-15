@@ -112,9 +112,16 @@ curl -X DELETE http://localhost:9000/users/3
 ```
 
 # Data persistence in Frontend
+## When and how to use
 There are scenarios when we need to persist data in the local storage of user. Example: when user is logged in, we want to persist this information so that if user refreshes the tab or reopens the tab, then user is stll loggedin.
 
 We can use `localStorage` for this. It has `getItem` and `setItem` to persist the values.
+
+## Storage event listener
+If another tab logs out and updates the localstorage with this new value, then we want to react to that logout in our tab. Currently we get the localstorage in AuthProvider only once when the App is mounted. To listen to changes in storage for the login state, we should add a listener.
+
+For this, we have added event listener in useEffect of NotesManagementApp which will be called when App is mounted, and in addition, we have also added callback to remove that listener which will be called when App is unmounted. In this listener, we are reacting to any change in our login state.
+
 
 # React concepts
 ## React component - sttributes and child elements
