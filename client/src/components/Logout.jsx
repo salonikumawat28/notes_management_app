@@ -4,6 +4,7 @@ function Logout() {
     const {setIsLoggedIn} = useAuthContext();
 
     function logout() {
+        localStorage.removeItem("isLoggedIn");
         setIsLoggedIn(false);
     }
 

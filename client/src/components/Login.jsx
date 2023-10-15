@@ -4,6 +4,7 @@ function Login() {
     const {setIsLoggedIn} = useAuthContext();
 
     function login() {
+        localStorage.setItem("isLoggedIn", true);
         setIsLoggedIn(true);
     }
 
