@@ -38,7 +38,7 @@ Controller of an API involves a series of well-defined steps. Here's a breakdown
 
 4. Call Model layer to perform CRUD operations
 
-5. Data transformation for API response: Transform the database response to a format which is compatible with the API response.
+5. Light-weight Data transformation for API response: Transform the database response to a format which is compatible with the API response.
 
 6. Handle successful response: If API response is successful one, return with success code.
 
@@ -110,3 +110,31 @@ curl -X PUT http://localhost:9000/users/3 -H 'Content-Type: application/json' -d
 ```
 curl -X DELETE http://localhost:9000/users/3
 ```
+
+# React concepts
+## React component - sttributes and child elements
+A custom React component can have attributes and child elements as well. Example:
+```
+<Sample content="Hello" size=2>
+  <p>This is child text.</p>
+</Sample>
+```
+
+In above example, `content` and `size` are attributes of Sample component and `<p>This is child text.</p>` is children element.
+
+We can access these attributes in `Sample` component as `props.content` and `props.size`. We can access the child element as `props.children`. `children` is reserved propertu to get the child element in React.
+
+## React Context
+When we want to share `state` across components, then one of the way is to **pass it down using props**. i.e. we keep on passing that `state` down to child components as `props`. Example if `App` component defines `isLoggedIn` state and it should be set by `Login` component by calling `setIsLoggedIn`, then we need to pass `setIsLoggedIn` method from `App` to `LoginPage` to `Login` component.
+
+This approach is not scalable as a single variable might need to be passed across lot of components making:
+1. Code cluttered and complex. 
+2. Additionally, the middle components dont need it but they need to take it as prop and then pass it to their child.
+3. Code understanding and readability is impacted.
+
+Solution for this is using `React context`. Instead if defining a `useState` variable, we can use React context by following these steps:
+1. Create context
+2. Define the Provider component of the created context. In this Provider component, define the `useState` variables and set it in the context Provider.
+3. Define `useContext` using the created context. Let's say you gave it name `useSampleContext`
+4. Register the context Provider at the root component of the App. When you define a component at the root level, it can be used by all the components within the App. You can optionally register a provider for a sub-component but remember that only that sub-component and its child can access the context and not other components of the App. So generally we register the provider in the root component of the app.
+5. Now you can use the created context in any component to get/change the state variables. For this, instead of `useState`, simply call `useSampleContext`
