@@ -49,12 +49,12 @@ Model layer of an API does following:
 1. Perform (multiple) database CRUD operations.
 2. Process the data: Process the data from database so that we can compute the response which controller wants.
 
-### Server API
+# Server API
 Backend server API contains URLs via which clients can communicate with it. Few generic rules which we are following for server API are:
 - Content type for server API's request and response is JSON.
 
 Here are few APIs which server has:
-#### Users API
+## Users API
 1. Get all users - URL: `/users`, HTTP method: GET, HTTP response: array of users
 2. Get a user - URL: `/users/:id`, HTTP method: GET, HTTP response: requested user 
 3. Create a new user - URL: `/users`, HTTP method: POST, HTTP request: user to be created, HTTP response: created user
@@ -62,7 +62,7 @@ Here are few APIs which server has:
 5. Update the user - URL: `/users/:id`, HTTP method: PATCH, HTTP request: user to be updated, HTTP response: updated user
 6. Delete the user - URL: `/users/:id`, HTTP method: DELETE, HTTP response: deletion status
 
-#### Notes API
+## Notes API
 1. Get all notes - URL: `/notes`, HTTP method: GET, HTTP response: array of notes
 2. Get a note - URL: `/notes/:id`, HTTP method: GET, HTTP response: requested note 
 3. Create a new note - URL: `/notes`, HTTP method: POST, HTTP request: note to be created, HTTP response: created note
@@ -111,6 +111,14 @@ curl -X PUT http://localhost:9000/users/3 -H 'Content-Type: application/json' -d
 curl -X DELETE http://localhost:9000/users/3
 ```
 
+## Underscore Library
+Underscore.js provides a collection of utility functions for common programming tasks in JavaScript. Some key functions and features offered by Underscore.js:
+1. each(): Iterate over each element in an array or each property in an object.
+2. isEmpty(): which checks whether a given object is empty.
+3. map(): Create a new array by applying a function to each element in an existing array.
+4. reduce(): Reduce an array to a single value.
+5. filter: Create a new array with all elements that pass a test.
+
 # Data persistence in Frontend
 ## When and how to use
 There are scenarios when we need to persist data in the local storage of user. Example: when user is logged in, we want to persist this information so that if user refreshes the tab or reopens the tab, then user is stll loggedin.
@@ -150,3 +158,64 @@ Solution for this is using `React context`. Instead if defining a `useState` var
 3. Define `useContext` using the created context. Let's say you gave it name `useSampleContext`
 4. Register the context Provider at the root component of the App. When you define a component at the root level, it can be used by all the components within the App. You can optionally register a provider for a sub-component but remember that only that sub-component and its child can access the context and not other components of the App. So generally we register the provider in the root component of the app.
 5. Now you can use the created context in any component to get/change the state variables. For this, instead of `useState`, simply call `useSampleContext`
+
+# Express Concepts
+## Creating express app
+1. Create the using `const app = express()` line.
+2. `app.use()` is used to setup a lot of things in the express app. One of the main example is to set our URL routers. Example: `app.use('/users', usersRouter);`
+
+## Starting the express app
+Server is started using `listen` method.
+```
+app.set('port', port);
+var server = http.createServer(app);
+server.listen(port);
+server.on('listening', () => console.log('Listening on ' + port));
+```
+In above case, `app` is the app which we created using `express()`.
+
+# Database concepts
+## Creating database
+We are creating the mongo database on cloud.
+Now we can copy the database URL by first copying the cluster URL from mongo cloud cluster connection tab:
+```
+mongodb+srv://<cluster_name>:<cluster_password>@<cluster_url>?retryWrites=true&w=majority"
+```
+and then adding the database name in it:
+```
+mongodb+srv://<cluster_name>:<cluster_password>@<cluster_url>/<database_name>?retryWrites=true&w=majority"
+```
+
+Example:
+```
+Cluster URL example:
+mongodb+srv://Cluster93678:Cluster93678@cluster93678.0n6ht8f.mongodb.net?retryWrites=true&w=majority"
+
+Database URL example:
+mongodb+srv://Cluster93678:Cluster93678@cluster93678.0n6ht8f.mongodb.net/notes_management?retryWrites=true&w=majority"
+```
+In above example:
+
+## Connecting to the database
+Express server will connect to the database on starting the server itself.
+This is a 2 step process:
+1. Connect to the db: We can connect to the db using `db.connectDb();`. Here we are not waiting for the connection to complete.
+2. Start express server on successful connection: We can set `connected` listener on the database connection object to listen to whenever the connection is successful. As soon as connection is successfuly, we will start the express server. 
+```
+db.getDbConnection().on('connected', () => {
+  console.log('Mongoose connected to the database.');
+  // Start the server
+});
+```
+## Start performing CRUD operations
+
+## Database scalability
+
+## Database indexing
+
+## Database terminology
+1. Collection - Table is called Collection in MongoDB
+2. Document - Row/Record is called Document in MongoDB
+
+# TODO
+Add database points like who will create db, who will connect to db, when table will be create and who/when CRUD opreations will happen.
