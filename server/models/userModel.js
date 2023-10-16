@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
   }, {_id: false});
 
   // Note: Setting mongoose-sequence to auto increment the _id. 
-userSchema.plugin(AutoIncrement, {inc_field: '_id'});
+userSchema.plugin(AutoIncrement, {id: 'user_id_counter', inc_field: '_id'});
 
 const userModel = mongoose.model('User', userSchema);
 
