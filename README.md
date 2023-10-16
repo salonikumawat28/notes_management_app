@@ -208,6 +208,30 @@ db.getDbConnection().on('connected', () => {
 });
 ```
 ## Start performing CRUD operations
+### CRUD operations
+Model layer will be responsible to define methods to perform CRUD operations. In our model layer, we are using mongoose model for basic CRUD operations. Mongoose model will also create the collection automatically if its not already presented in the database.
+### Auto increment
+To auto-increment a field in the collection, we are using `mongoose-sequence` library.
+### Example
+```
+const mongoose = require('mongoose');
+const AutoIncrementFactory = require('mongoose-sequence');
+
+const AutoIncrement = AutoIncrementFactory(mongoose);
+
+// Note: Setting _id to false so that mongoose doesn't auto create the _id.
+const userSchema = new mongoose.Schema({
+    firstName: String,
+    lastName: String
+  }, {_id: false});
+
+  // Note: Setting mongoose-sequence to auto increment the _id. 
+userSchema.plugin(AutoIncrement, {inc_field: '_id'});
+
+const userModel = mongoose.model('User', userSchema);
+
+module.exports = userModel;
+```
 
 ## Database scalability
 

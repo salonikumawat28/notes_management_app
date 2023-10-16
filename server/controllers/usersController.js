@@ -1,17 +1,15 @@
-// Create sample user data
-let users = new Map();
-users.set(1, { id: 1, firstName: 'John', lastName: 'Doe' });
-users.set(2, { id: 2, firstName: 'Jane', lastName: 'Doe' });
+const userModel = require("../models/userModel");
 
 /* Get users listing. */
-function getUsers(req, res, next) {
-    res.send(Array.from(users.values()));
+async function getUsers(req, res, next) {
+    const users = await userModel.find({});
+    res.send(users);
 }
 
 /* Get a specific user by ID. */
-function getUser(req, res, next) {
+async function getUser(req, res, next) {
     const userId = parseInt(req.params.id);
-    const user = users.get(userId);
+    const user = await userModel.findById(userId);
 
     if (user) {
         res.json(user);
@@ -21,71 +19,50 @@ function getUser(req, res, next) {
 }
 
 /* Create a new user. */
-function createUser(req, res, next) {
+async function createUser(req, res, next) {
     let newUser = req.body;
     if (!newUser.firstName || !newUser.lastName) {
         res.status(400).json({ message: 'Full Name is required' });
         return;
     }
 
-    newUser["id"] = users.size + 1;
-    users.set(newUser.id, newUser);
-    res.status(201).json(newUser);
+    const createdUser = await userModel.create(newUser);
+    res.status(201).json(createdUser);
 }
 
 /*  Replace the user with new user data. 
 */
-function replaceUser(req, res, next) {
+async function replaceUser(req, res, next) {
     const userId = parseInt(req.params.id);
-    const user = users.get(userId);
-    if (!user) {
-        res.status(404).json({ message: 'User not found' });
-        return;
-    }
 
     let newUser = req.body;
-    newUser["id"] = userId;
+    newUser["_id"] = userId;
     if (!newUser.firstName || !newUser.lastName) {
         res.status(400).json({ message: 'Full Name is required' });
         return;
     }
 
-    users.set(userId, newUser);
-    res.json(newUser);
+    const replacedUser = await userModel.findOneAndUpdate({_id: userId}, newUser, {new: true});
+    res.json(replacedUser);
 }
 
 /* Update the user with new user data.
 */
-function updateUser(req, res, next) {
+async function updateUser(req, res, next) {
     const userId = parseInt(req.params.id);
-    const user = users.get(userId);
-    if (!user) {
-        res.status(404).json({ message: 'User not found' });
-        return;
-    }
 
     let userData = req.body;
-    userData["id"] = userId;
-    const newUser = {
-        ...user,
-        ...userData
-    }
-    users.set(userId, newUser);
-    res.json(newUser);
+    userData["_id"] = userId;
+    const updatedUser = await userModel.findOneAndUpdate({_id: userId}, {$set: userData}, {new: true});
+    res.json(updatedUser);
 }
 
 /* Delets a user by ID. */
-function deleteUser(req, res, next) {
+async function deleteUser(req, res, next) {
     const userId = parseInt(req.params.id);
-    const isUserExists = users.has(userId);
 
-    if (!isUserExists) {
-        res.status(404).json({ message: 'User not found' });
-        return;
-    }
-
-    const isUserDeleted = users.delete(userId);
-    if (isUserDeleted) {
+    const deletedUser = await userModel.findByIdAndDelete(userId);
+    if (deletedUser) {
         res.json({ message: 'User deleted successfully' });
     } else {
         res.status(404).json({ message: 'Unable to delete user' });
