@@ -1,0 +1,17 @@
+/* * {
+    box-sizing: border-box;
+} */
+
+.Box {
+    background-color: rgb(246, 223, 223);
+    color: rgb(24, 14, 14);
+    background-image: url('https://cdn.pixabay.com/photo/2018/11/17/07/10/notebook-3820634_1280.jpg');
+    background-size: cover;
+    background-position: center; /* Center the background image */
+    background-repeat: no-repeat;
+    /* image-resolution: 100%; */
+    
+    /* align-items: center; */
+    width: 100%;
+    height: 800px;
+}
