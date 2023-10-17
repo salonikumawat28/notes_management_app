@@ -1,27 +1,24 @@
+import '../css/SignUp.css';
+
 function SignUp() {
     return (
         <div>
-            <h1>Signup</h1>
             <form>
-                <label> Name:
-                    <input type="text" name="name" />
-                </label>
-                <br />
-                <label> Email:
-                    <input type="email" name="email" />
-                </label>
-                <br />
-                <label>
-                    Password:
-                    <input type="password" name="password" />
-                </label>
-                <br />
+                <label> Name: </label>
+                <input type="text" name="name" />
+                
+                <label> Email: </label>
+                <input type="email" name="email" />
+                
+                <label> Password: </label>
+                <input type="password" name="password" />
+
+                <div className='Link'>
+                    <a href="#">Already have an account?</a>
+                </div>
+                
                 <button type="submit">Sign Up</button>
             </form>
-
-            <div>
-                <a href="#">Already have an account?</a>
-            </div>
         </div>
     );
 }

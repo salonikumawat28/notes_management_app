@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useAuthContext } from './contexts/AuthContext';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
+import './css/NotesManagementApp.css';
 
 function NotesMangementApp() {
     const {isLoggedIn, setIsLoggedIn} = useAuthContext();
@@ -21,7 +22,7 @@ function NotesMangementApp() {
   
 
   return (
-    <div>
+    <div className="Box">
       {isLoggedIn ? <HomePage /> : <LoginPage />}
     </div>
   );

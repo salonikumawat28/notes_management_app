@@ -1,4 +1,5 @@
 import { useAuthContext } from "../contexts/AuthContext";
+import '../css/Login.css';
 
 function Login() {
     const {setIsLoggedIn} = useAuthContext();
@@ -11,10 +12,6 @@ function Login() {
     return (
         <div>
             <div>
-                <h1>Welcome to Notes App</h1>
-            </div>
-            <div>
-                <h2>Login Page</h2>
                 <form onSubmit={login}>
                     <div>
                         <label htmlFor="username">Username:</label>
@@ -34,7 +31,7 @@ function Login() {
                             required
                         />
                     </div>
-                    <div>
+                    <div className="Link">
                         <a href="#">Create an account.</a>
                     </div>
                     <div>
