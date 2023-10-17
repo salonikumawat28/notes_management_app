@@ -21,8 +21,8 @@ async function getUser(req, res, next) {
 /* Create a new user. */
 async function createUser(req, res, next) {
     let newUser = req.body;
-    if (!newUser.firstName || !newUser.lastName) {
-        res.status(400).json({ message: 'Full Name is required' });
+    if (!newUser.name || !newUser.email || !newUser.password) {
+        res.status(400).json({ message: 'Full information is required' });
         return;
     }
 
@@ -37,8 +37,8 @@ async function replaceUser(req, res, next) {
 
     let newUser = req.body;
     newUser["_id"] = userId;
-    if (!newUser.firstName || !newUser.lastName) {
-        res.status(400).json({ message: 'Full Name is required' });
+    if (!newUser.name || !newUser.email || !newUser.password) {
+        res.status(400).json({ message: 'Full information is required' });
         return;
     }
 
