@@ -27,7 +27,7 @@ async function createNote(req, res, next) {
     }
 
     const createdNote = await notesModel.create(newNote);
-    res.status(201).json(newNote);
+    res.status(201).json(createdNote);
 }
 
 /*  Replace the note with new note data. 
