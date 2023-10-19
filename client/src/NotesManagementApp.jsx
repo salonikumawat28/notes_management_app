@@ -3,13 +3,14 @@ import { useAuthContext } from './contexts/AuthContext';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import './css/NotesManagementApp.css';
+import _ from 'underscore';
 
 function NotesMangementApp() {
-    const {isLoggedIn, setIsLoggedIn} = useAuthContext();
+    const {user, setUser} = useAuthContext();
 
     function handleStorageChange(event) {
-        if (event.key === 'isLoggedIn') {
-            setIsLoggedIn(!!localStorage.getItem('isLoggedIn'));
+        if (event.key === 'user') {
+            setUser(!!localStorage.getItem('user'));
         }
     }
 
@@ -23,7 +24,7 @@ function NotesMangementApp() {
 
   return (
     <div className="Box">
-      {isLoggedIn ? <HomePage /> : <LoginPage />}
+      {_.get(user, "userId") ? <HomePage /> : <LoginPage />}
     </div>
   );
 }

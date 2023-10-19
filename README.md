@@ -287,3 +287,4 @@ module.exports = userModel;
 1. Add database points like who will create db, who will connect to db, when table will be create and who/when CRUD opreations will happen.
 2. Explain and write about the database disconnect logic on server stop
 3. Add curl API for notes in readme
+4. Add in readme that why we are doing window onevetnlistener on storage.
