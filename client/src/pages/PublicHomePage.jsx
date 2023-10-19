@@ -1,7 +1,7 @@
 import Login from "../components/Login";
 import Welcome from "../components/Welcome";
 
-function LoginPage() {
+function PublicHomePage() {
     return (
         <div>
             <Welcome />
@@ -10,4 +10,4 @@ function LoginPage() {
     );
 }
 
-export default LoginPage;
+export default PublicHomePage;
