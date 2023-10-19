@@ -54,7 +54,7 @@ function SignUp() {
   }
 
   return (
-    <div>
+    <div className="signup">
       <form onSubmit={signUpUser}>
         <label> Name: </label>
         <input

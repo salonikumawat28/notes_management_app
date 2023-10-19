@@ -43,9 +43,8 @@ function Login() {
   }
 
   return (
-    <div>
-      <div>
-        <form onSubmit={login}>
+    <div className="login">
+      <form onSubmit={login}>
           <div>
             <label htmlFor="email">Email:</label>
             <input
@@ -75,7 +74,6 @@ function Login() {
             <button type="submit">Login</button>
           </div>
         </form>
-      </div>
     </div>
   );
 }
