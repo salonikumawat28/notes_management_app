@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import axios from "axios";
 import "../css/NoteCreate.css";
+import _ from "underscore";
 
 function NoteCreate() {
   const [note, setNote] = useState({ content: "", title: "" });
@@ -32,28 +34,45 @@ function NoteCreate() {
     }
   }
 
-  useEffect(() => {
-    const collapseNoteIfOutsideClick = (event) => {
-        // noteCreateRef doesn't belong to this instance of the component.
-        if (!noteCreateRef.current) {
-            return;
-        }
+  async function saveNote() {
+    const response = await axios.post("http://localhost:9000/notes/", note);
+    const createdNote = response.data;
+    return !!_.get(createdNote, "_id");
+  }
 
-        // Click was inside component.
-        if(noteCreateRef.current.contains(event.target)) {
-            return;
-        }
+  const collapseNoteIfOutsideClick = async (event) => {
+    // noteCreateRef doesn't belong to this instance of the component.
+    if (!noteCreateRef.current) {
+        return;
+    }
 
-        // Collapse note.
+    // Click was inside component.
+    if(noteCreateRef.current.contains(event.target)) {
+        return;
+    }
+
+    // If note is empty, just collapse.
+    if (note.title === "" && note.content === "") {
         collapseNote();
-    };
+        return;
+    }
+
+    // Save note and collapse component.
+    const noteSaved = await saveNote();
+    if (noteSaved) {
+        collapseNote();
+        setNote({ content: "", title: "" });
+    }
+};
+
+  useEffect(() => {
 
     document.addEventListener('mousedown', collapseNoteIfOutsideClick);
 
     return () => {
       document.removeEventListener('mousedown', collapseNoteIfOutsideClick);
     };
-  }, []);
+  }, [note, isExpanded]);
 
   return (
     <div className={`create-note ${isExpanded ? "expanded" : ""}`} ref={noteCreateRef}>
