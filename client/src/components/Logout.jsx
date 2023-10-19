@@ -3,7 +3,8 @@ import { useAuthContext } from "../contexts/AuthContext";
 function Logout() {
     const {setIsLoggedIn} = useAuthContext();
 
-    function logout() {
+    function logout(event) {
+        event.preventDefault(); // Prevent the default form submission behavior
         localStorage.removeItem("isLoggedIn");
         setIsLoggedIn(false);
     }
