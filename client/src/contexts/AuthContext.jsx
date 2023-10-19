@@ -1,12 +1,13 @@
 import { useContext, useState, createContext } from "react";
+import _ from "underscore";
 
 const AuthContext = createContext();
 
 export function AuthContextProvider({children}) {
-    const isLoggedInInitialState = localStorage.getItem("isLoggedIn");
-    const [isLoggedIn, setIsLoggedIn] = useState(!!isLoggedInInitialState);
+    const intialUser = localStorage.getItem("user");
+    const [user, setUser] = useState(_.isEmpty(intialUser) ? {} : intialUser);
     return (
-        <AuthContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
+        <AuthContext.Provider value={{user, setUser}}>
             {children}
         </AuthContext.Provider>
     );
