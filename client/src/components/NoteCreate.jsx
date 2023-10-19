@@ -3,7 +3,8 @@ import { useState } from "react";
 function NoteCreate() {
   const [note, setNote] = useState("");
 
-  async function createNote() {
+  async function createNote(event) {
+    event.preventDefault(); // Prevent the default form submission behavior
     const requestInfo = {
         method: "POST",
         headers: {

@@ -16,7 +16,8 @@ function NotesList() {
     ///////////////
     useEffect(() => {
         // Fetch notes from the server
-        async function fetchNotes() {
+        async function fetchNotes(event) {
+            event.preventDefault(); // Prevent the default form submission behavior
             try {
                 const response = await fetch("http://localhost:9000/notes/");
                 const data = await response.json();
