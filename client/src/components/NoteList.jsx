@@ -1,19 +1,11 @@
-import { useEffect, useState } from "react";
 import "../css/Welcome.css";
-import axios from "axios";
 import EmptyNotesIndicator from "./EmptyNotesIndicator";
 import Note from "./Note";
 import "../css/NoteList.css";
+import { useNotesContext } from "../contexts/NotesContext";
 
 function NoteList() {
-  const [notes, setNotes] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:9000/notes/")
-      .then((response) => setNotes(response.data))
-      .catch((error) => console.error("Error fetching notes:", error));
-  }, []);
+  const { notes } = useNotesContext();
 
   return (
     <div>

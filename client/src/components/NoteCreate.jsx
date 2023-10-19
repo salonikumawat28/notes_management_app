@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import "../css/NoteCreate.css";
 import _ from "underscore";
+import { useNotesContext } from "../contexts/NotesContext";
 
 function NoteCreate() {
+  const { notes, setNotes } = useNotesContext();
   const [note, setNote] = useState({ content: "", title: "" });
   const [isExpanded, setExpanded] = useState(false);
   const noteCreateRef = useRef(null);
@@ -24,65 +26,73 @@ function NoteCreate() {
 
   const expandNote = () => {
     if (!isExpanded) {
-        setExpanded(true);
+      setExpanded(true);
     }
   };
 
   const collapseNote = () => {
     if (isExpanded) {
-        setExpanded(false);
+      setExpanded(false);
     }
-  }
+  };
 
   async function saveNote() {
     const response = await axios.post("http://localhost:9000/notes/", note);
     const createdNote = response.data;
-    return !!_.get(createdNote, "_id");
+    if (!!_.get(createdNote, "_id")) {
+      setNotes([createdNote, ...notes]);
+      return true;
+    }
+    return false;
   }
 
   const collapseNoteIfOutsideClick = async (event) => {
     // noteCreateRef doesn't belong to this instance of the component.
     if (!noteCreateRef.current) {
-        return;
+      return;
     }
 
     // Click was inside component.
-    if(noteCreateRef.current.contains(event.target)) {
-        return;
+    if (noteCreateRef.current.contains(event.target)) {
+      return;
     }
 
     // If note is empty, just collapse.
     if (note.title === "" && note.content === "") {
-        collapseNote();
-        return;
+      collapseNote();
+      return;
     }
 
     // Save note and collapse component.
     const noteSaved = await saveNote();
     if (noteSaved) {
-        collapseNote();
-        setNote({ content: "", title: "" });
+      collapseNote();
+      setNote({ content: "", title: "" });
     }
-};
+  };
 
   useEffect(() => {
-
-    document.addEventListener('mousedown', collapseNoteIfOutsideClick);
+    document.addEventListener("mousedown", collapseNoteIfOutsideClick);
 
     return () => {
-      document.removeEventListener('mousedown', collapseNoteIfOutsideClick);
+      document.removeEventListener("mousedown", collapseNoteIfOutsideClick);
     };
   }, [note, isExpanded]);
 
   return (
-    <div className={`create-note ${isExpanded ? "expanded" : ""}`} ref={noteCreateRef}>
-      {isExpanded && <input
-        type="text"
-        name="title"
-        placeholder="Title"
-        value={note.title}
-        onChange={handleTitleChange}
-      />}
+    <div
+      className={`create-note ${isExpanded ? "expanded" : ""}`}
+      ref={noteCreateRef}
+    >
+      {isExpanded && (
+        <input
+          type="text"
+          name="title"
+          placeholder="Title"
+          value={note.title}
+          onChange={handleTitleChange}
+        />
+      )}
       <textarea
         name="content"
         onClick={expandNote}
