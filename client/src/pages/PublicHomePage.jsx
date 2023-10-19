@@ -1,11 +1,13 @@
 import Login from "../components/Login";
 import SignUp from "../components/SignUp";
-import Welcome from "../components/Welcome";
+import PublicInfo from "../components/PublicInfo";
+import PublicHeader from "../components/PublicHeader";
 
 function PublicHomePage(props) {
     return (
         <div>
-            <Welcome />
+            <PublicHeader />
+            <PublicInfo />
             {props.showLogin ? <Login /> : <SignUp />}
         </div>
     );

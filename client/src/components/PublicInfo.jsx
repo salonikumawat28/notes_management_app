@@ -1,6 +1,6 @@
 import '../css/Welcome.css';
 
-function Welcome() {
+function PublicInfo() {
     return (
         <div>
             <div className="overlay">
@@ -11,4 +11,4 @@ function Welcome() {
     );
 }
 
-export default Welcome;
+export default PublicInfo;
