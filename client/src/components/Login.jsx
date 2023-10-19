@@ -3,6 +3,7 @@ import { useAuthContext } from "../contexts/AuthContext";
 import "../css/Login.css";
 import _ from "underscore";
 import axios from "axios";
+import { Link } from 'react-router-dom';
 
 function Login() {
   const { setUser } = useAuthContext();
@@ -23,7 +24,7 @@ function Login() {
       console.log("Response User is: ", JSON.stringify(user));
 
       // Getting the user id from the user we get from fetch call
-      const userId = _.get(user, "userId");
+      const userId = _.get(user, "_id");
       if (userId) {
         localStorage.setItem("user", user);
         setUser(user);
@@ -68,7 +69,7 @@ function Login() {
             />
           </div>
           <div className="Link">
-            <a href="#">Create an account.</a>
+            <Link to="/signup">Create an account.</Link>
           </div>
           <div>
             <button type="submit">Login</button>

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "../css/SignUp.css";
 import axios from "axios";
+import { Link } from 'react-router-dom';
+import _ from "underscore";
 
 function SignUp() {
   const [newUser, setNewUser] = useState({ name: "", email: "", password: "" });
@@ -29,8 +31,11 @@ function SignUp() {
       //   console.log("response daya is: ", response.data);
       // const signedUpUser = await response.json();
       const signedUpUser = response.data;
-      console.log("Signedup user: ", signedUpUser);
-      setNewUser(signedUpUser);
+      const userId = _.get(signedUpUser, "_id");
+      if (userId) {
+        localStorage.setItem("user", signedUpUser);
+        setNewUser(signedUpUser);
+      }
     } catch (error) {
       console.error("Error:", error.message);
     }
@@ -79,7 +84,7 @@ function SignUp() {
         />
 
         <div className="Link">
-          <a href="#">Already have an account?</a>
+          <Link to="/login">Already have an account?</Link>
         </div>
 
         <button type="submit">Sign Up</button>

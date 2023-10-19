@@ -7,7 +7,7 @@ export function AuthContextProvider({children}) {
     const intialUser = localStorage.getItem("user");
     const [user, setUser] = useState(_.isEmpty(intialUser) ? {} : intialUser);
 
-    const isLoggedIn = !_.isEmpty(user, "userId");
+    const isLoggedIn = !_.isEmpty(user, "_id");
 
     return (
         <AuthContext.Provider value={{user, setUser, isLoggedIn}}>

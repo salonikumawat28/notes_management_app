@@ -3,7 +3,7 @@ import { useAuthContext } from "./contexts/AuthContext";
 import AuthHomePage from "./pages/AuthHomePage";
 import PublicHomePage from "./pages/PublicHomePage";
 import "./css/NotesManagementApp.css";
-import _ from "underscore";
+import {BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 function NotesMangementApp() {
   const { isLoggedIn, setUser } = useAuthContext();
@@ -23,7 +23,41 @@ function NotesMangementApp() {
 
   return (
     <div className="Box">
-      {isLoggedIn ? <AuthHomePage /> : <PublicHomePage />}
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              isLoggedIn ? (
+                <AuthHomePage />
+              ) : (
+                <PublicHomePage showLogin={true} />
+              )
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              isLoggedIn ? (
+                <Navigate to="/" />
+              ) : (
+                <PublicHomePage showLogin={true} />
+              )
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              isLoggedIn ? (
+                <Navigate to="/" />
+              ) : (
+                <PublicHomePage showLogin={false} />
+              )
+            }
+          />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
