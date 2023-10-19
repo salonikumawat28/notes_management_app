@@ -5,6 +5,7 @@ const AutoIncrement = AutoIncrementFactory(mongoose);
 
 // Note: Setting _id to false so that mongoose doesn't auto create the _id.
 const notesSchema = new mongoose.Schema({
+    title: String,
     content: String
 },{_id: false});
 
