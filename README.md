@@ -71,6 +71,42 @@ Here are few APIs which server has:
 6. Delete the note - URL: `/notes/:id`, HTTP method: DELETE, HTTP response: deletion status
 
 # Important Concepts
+
+## How to make API fetch call from frontend
+1. GET All:
+```
+const response = await fetch("http://localhost:9000/notes/");
+const data = await response.json();
+```
+
+2. GET:
+```
+```
+
+2. POST:
+```
+const requestInfo = {
+    method: "POST",
+    headers: {
+        "content-type": "application/json"
+    },
+    body: JSON.stringify(note)
+};
+const response = await fetch("http://localhost:9000/notes/", requestInfo);
+const createdNote = await response.json();
+```
+
+3. PATCH:
+```
+```
+
+4. PUT:
+```
+```
+
+5. DELETE:
+```
+```
 ## How to change listening port in Express.js
 To change the listening port of the server in Express.js, go to `bin -> www` and update 
 ```
@@ -96,19 +132,25 @@ curl -X GET http://localhost:9000/users/1
 ```
 3. To update partial information of the user
 ```
-curl -X PATCH http://localhost:9000/users/3 -H 'Content-Type: application/json' -d '{"firstName": "Saloni"}'
+curl -X PATCH http://localhost:9000/users/3 -H 'Content-Type: application/json' -d '{"name": "Rita", "password": "123456"}'
 ```
 4. To create a new user resource
 ```
-curl -X POST http://localhost:9000/users -H 'Content-Type: application/json' -d '{"firstName": "Abhishek", "lastName": "Kumawat"}'
+curl -X POST http://localhost:9000/users -H 'Content-Type: application/json' -d '{"name": "Saloni", "email": "sample4@example.com", "password": "123456"}'
 ```
 5. To update a user with new user data
 ```
-curl -X PUT http://localhost:9000/users/3 -H 'Content-Type: application/json' -d '{"firstName": "Mehul", "lastName": "Kumawat"}'
+curl -X PUT http://localhost:9000/users/2 -H 'Content-Type: application/json' -d '{"name": "Saloni", "email": "sample1@example.com", "password": "123456"}'
 ```
 6. To delete a user
 ```
 curl -X DELETE http://localhost:9000/users/3
+```
+
+## Login API
+1. To login user
+```
+curl -X POST http://localhost:9000/login -H 'Content-Type: application/json' -d '{"email": "manish@example.com", "password": "111111"}'
 ```
 
 ## Underscore Library
@@ -242,4 +284,6 @@ module.exports = userModel;
 2. Document - Row/Record is called Document in MongoDB
 
 # TODO
-Add database points like who will create db, who will connect to db, when table will be create and who/when CRUD opreations will happen.
+1. Add database points like who will create db, who will connect to db, when table will be create and who/when CRUD opreations will happen.
+2. Explain and write about the database disconnect logic on server stop
+3. Add curl API for notes in readme
