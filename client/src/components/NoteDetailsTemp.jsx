@@ -1,6 +1,6 @@
 import React from 'react';
 
-function NoteDetails({note}) {
+function NoteDetailsTemp({note}) {
     if (!note) {
         return <div>Select a note to view details</div>;
       }
@@ -12,4 +12,4 @@ function NoteDetails({note}) {
     );
 }
 
-export default NoteDetails;
+export default NoteDetailsTemp;

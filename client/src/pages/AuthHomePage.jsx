@@ -1,12 +1,13 @@
-import Logout from "../components/Logout";
-import NotesListPage from "./NotesListPage";
+import AuthHeader from "../components/AuthHeader";
+import NoteCreate from "../components/NoteCreate";
+import NoteList from "../components/NoteList";
 
 function AuthHomePage() {
     return (
         <div>
-            <p> I am in auth home page</p>
-            <Logout />
-            <NotesListPage />
+            <AuthHeader />
+            <NoteCreate />
+            <NoteList />
         </div>
     );
 }

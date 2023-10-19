@@ -1,8 +1,8 @@
 import { useState } from "react";
-import NoteCreate from "../components/NoteCreate";
-import NotesList from "../components/NotesList";
+import NoteCreateTemp from "../components/NoteCreateTemp";
+import NotesListTemp from "../components/NoteListTemp";
 
-function NotesListPage() {
+function NotesListPageTemp() {
     const [showNotesListComponent, setShowNotesListComponent] = useState(false);
 
     function showNotesList() {
@@ -13,10 +13,10 @@ function NotesListPage() {
         <div>
            <button type="submit" onClick={showNotesList}>Notes</button>
            <h1>Notes</h1>
-           <NoteCreate />
-           {showNotesListComponent && <NotesList />}
+           <NoteCreateTemp />
+           {showNotesListComponent && <NotesListTemp />}
         </div>
     );
 }
 
-export default NotesListPage;
+export default NotesListPageTemp;

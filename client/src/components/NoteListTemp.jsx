@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import NoteDetails from "./NoteDetails";
+import NoteDetailsTemp from "./NoteDetailsTemp";
 import _ from "underscore";
 
 // // Sample Notes
@@ -8,7 +8,7 @@ import _ from "underscore";
 //     {id: 2, content: 'This is note 2.'}
 // ];
 
-function NotesList() {
+function NoteListTemp() {
     const [selectedNote, setSelectedNote] = useState({});
     const [notes, setNotes] = useState([]);
 
@@ -46,9 +46,9 @@ function NotesList() {
                 </li>
               ))}
             </ul>
-            {!_.isEmpty(selectedNote) ? <NoteDetails note={selectedNote} /> : <></>}
+            {!_.isEmpty(selectedNote) ? <NoteDetailsTemp note={selectedNote} /> : <></>}
         </div>
     );
 }
 
-export default NotesList;
+export default NoteListTemp;
