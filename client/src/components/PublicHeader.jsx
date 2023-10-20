@@ -1,7 +1,7 @@
 import '../css/Welcome.css';
 import { Link } from 'react-router-dom';
 
-function PublicInfo() {
+function PublicHeader() {
     return (
         <div>
             <Link to="/">Add Logo here</Link>
@@ -9,4 +9,4 @@ function PublicInfo() {
     );
 }
 
-export default PublicInfo;
+export default PublicHeader;
