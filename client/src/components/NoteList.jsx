@@ -1,14 +1,13 @@
-import "../css/Welcome.css";
 import EmptyNotesIndicator from "./EmptyNotesIndicator";
 import Note from "./Note";
-import "../css/NoteList.css";
 import { useNotesContext } from "../contexts/NotesContext";
+import "../css/NoteList.css";
 
 function NoteList() {
   const { notes } = useNotesContext();
 
   return (
-    <div>
+    <div className="NoteList">
       {notes.length === 0 ? (
         <EmptyNotesIndicator />
       ) : (
