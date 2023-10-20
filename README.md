@@ -288,3 +288,20 @@ module.exports = userModel;
 2. Explain and write about the database disconnect logic on server stop
 3. Add curl API for notes in readme
 4. Add in readme that why we are doing window onevetnlistener on storage.
+
+```mermaid
+flowchart LR
+    subgraph client
+    Request
+    end
+    client --> Router
+    subgraph server
+    Router --> Controller
+    Controller --> Model
+    Model --> Mongoose
+    end
+    subgraph DataBase
+    DB
+    end
+    Mongoose --> DataBase
+```
