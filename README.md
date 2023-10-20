@@ -307,35 +307,47 @@ flowchart LR
 ```
 
 ```mermaid
-graph LR
+flowchart LR
     subgraph User
     U(/login)
     end
-    User --> A
+    User --> Web-API
     subgraph Chrome
-        A(API Request------------------Response) --> Pr--> L{Logged In}
+        direction TB
+        subgraph Web-API
+        Re(Request)
+        Res(Response)
+        end
+        Res --> Pr(Parse Response) 
+        Pr --> L{Logged In}
         L -->|Yes| AH(AuthHome Page)
         L -->|No| PH(PublicHome page)
-        AH --> CN(NoteCreate 
-                Component) --> P(Post call)
-        AH --> NL(NoteList 
+        AH --> NC(NotesContex Provider)
+        NC --> NL(NoteList 
                 Component) --> G(Get call)
     end
     subgraph Frontend-Server
-        newLines("`HTML
-        CSS
-        Javascript`")
+        Has{Does 
+            client 
+            has 
+            latest 
+            version 
+            cached?}
+        HCJ(HTML
+            CSS
+            Javascript)
     end
-    A -->|no cache or version| Frontend-Server -->|No Update or updated version| A
     subgraph Backend-server
-        R(Router) --> Co(Controller)
-        Co --> M(Model)
-        M --> Mo(Mongoose)
+        R(Router) <--> Co(Controller)
+        Co <--> M(Model)
+        M <--> Mo(Mongoose)
     end
     subgraph DataBase
         DB
     end
+    Re-->Has
+    Has --Nothing To update------> Res
+    Has --> HCJ --Updated data--> Res
     Mo --> DataBase
-    P --> R
-    G --> R
+    G <--> R
 ```
