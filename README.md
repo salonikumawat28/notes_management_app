@@ -305,3 +305,37 @@ flowchart LR
     end
     Mongoose --> DataBase
 ```
+
+```mermaid
+graph LR
+    subgraph User
+    U(/login)
+    end
+    User --> A
+    subgraph Chrome
+        A(API Request------------------Response) --> Pr--> L{Logged In}
+        L -->|Yes| AH(AuthHome Page)
+        L -->|No| PH(PublicHome page)
+        AH --> CN(NoteCreate 
+                Component) --> P(Post call)
+        AH --> NL(NoteList 
+                Component) --> G(Get call)
+    end
+    subgraph Frontend-Server
+        newLines("`HTML
+        CSS
+        Javascript`")
+    end
+    A -->|no cache or version| Frontend-Server -->|No Update or updated version| A
+    subgraph Backend-server
+        R(Router) --> Co(Controller)
+        Co --> M(Model)
+        M --> Mo(Mongoose)
+    end
+    subgraph DataBase
+        DB
+    end
+    Mo --> DataBase
+    P --> R
+    G --> R
+```
