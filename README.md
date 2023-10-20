@@ -307,7 +307,7 @@ flowchart LR
 ```
 
 ```mermaid
-flowchart LR
+graph TB
     subgraph User
     U(/login)
     end
@@ -338,9 +338,12 @@ flowchart LR
             Javascript)
     end
     subgraph Backend-server
-        R(Router) <--> Co(Controller)
+        R(Router) --> Co(Controller)
+        Co --> R
         Co <--> M(Model)
-        M <--> Mo(Mongoose)
+        M --> Co
+        M --> Mo(Mongoose)
+        Mo --> M
     end
     subgraph DataBase
         DB
@@ -349,5 +352,7 @@ flowchart LR
     Has --Nothing To update------> Res
     Has --> HCJ --Updated data--> Res
     Mo --> DataBase
-    G <--> R
+    DataBase --> Mo
+    G --> R
+    R --> G
 ```
