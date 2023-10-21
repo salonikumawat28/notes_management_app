@@ -356,3 +356,45 @@ graph TB
     G --> R
     R --> G
 ```
+
+```mermaid
+flowchart LR
+    subgraph User
+    CL(Click Login Button)
+    end
+    subgraph Chrome
+    S(Submit)
+    AC(AuthContext page)
+    AH(AuthHome Page)
+    NL(NoteList)
+    NV(NoteView)
+   
+    end
+    subgraph Backened-Server
+    R(Router)
+    Co(Controller)
+    M(Model)
+    Mo(Mongoose)
+    R --> Co
+    Co --> M
+    M --> Mo
+    Mo --> M
+    M --> Co
+    Co --> R
+    end
+    subgraph Database
+    Db
+    end
+    NL -- Get call --> R
+    R --List of Notes --> NL
+    CL --> S
+    Mo --> Database
+    Database --> Mo
+    S -- Post call --> R
+    R -- Logged In User --> AC
+    AC -- setUser state --> AH 
+    AH --> NL
+    NL --> NV
+    
+```
+    
