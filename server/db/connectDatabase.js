@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { databaseUrl } = require("../config");
 
 // Function to disconnect from MongoDB
 const disconnectDb = async () => {
@@ -11,10 +12,8 @@ const disconnectDb = async () => {
   }
 };
 
-function connectDb() {
-  mongoose.connect(
-    "mongodb+srv://Cluster93678:saloni1234@cluster93678.0n6ht8f.mongodb.net/notes_management?retryWrites=true&w=majority"
-  );
+async function connectDb() {
+  await mongoose.connect(databaseUrl);
 
   // Gracefully disconnect from MongoDB when the server is stopped
   process.on("SIGINT", () => {
@@ -26,19 +25,5 @@ function connectDb() {
   });
 }
 
-function connectDb() {
-  mongoose.connect(
-    "mongodb+srv://Cluster93678:saloni1234@cluster93678.0n6ht8f.mongodb.net/notes_management?retryWrites=true&w=majority"
-  );
-}
-
-function getDbConnection() {
-  return mongoose.connection;
-}
-
-const db = {
-  connectDb,
-  getDbConnection,
-};
-
-module.exports = db;
+// Connect to the database
+connectDb();

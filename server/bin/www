@@ -3,11 +3,11 @@
 /**
  * Module dependencies.
  */
-
+require('./db/connectDatabase'); // Require the file to start database connection
+const mongoose = require("mongoose");
 var app = require('../app');
 var debug = require('debug')('server:server');
 var http = require('http');
-const db = require('../db/db');
 
 /**
  * Get port from environment and store in Express.
@@ -23,14 +23,9 @@ app.set('port', port);
 var server = http.createServer(app);
 
 /**
- * Connect to the database.
- */
-db.connectDb();
-
-/**
  * Start express server on successful database connection.
  */
-db.getDbConnection().on('connected', () => {
+mongoose.connection.on('connected', () => {
   console.log('Mongoose connected to the database.');
   server.listen(port);
   server.on('error', onError);
@@ -40,7 +35,7 @@ db.getDbConnection().on('connected', () => {
 /**
  * Log error on database connection error.
  */
-db.getDbConnection().on('error', (error) => {
+mongoose.connection.on('error', (error) => {
   console.error('Mongoose connection error: ' + error);
 });
 

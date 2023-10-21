@@ -1,16 +1,17 @@
-const userModel = require("../models/userModel");
+const usersModel = require("../models/usersModel");
+const notesModel = require("../models/notesModel");
 const _ = require('underscore');
 
 /* Get users listing. */
 async function getUsers(req, res, next) {
-  const users = await userModel.find({});
+  const users = await usersModel.find({});
   res.send(users);
 }
 
 /* Get a specific user by ID. */
 async function getUser(req, res, next) {
-  const userId = parseInt(req.params.id);
-  const user = await userModel.findById(userId);
+  const userId = req.params.id;
+  const user = await usersModel.findById(userId);
 
   if (user) {
     res.json(user);
@@ -29,7 +30,7 @@ async function createUser(req, res, next) {
       return;
     }
   
-    const createdUser = await userModel.create(newUser);
+    const createdUser = await usersModel.create(newUser);
     console.error('Successfully processed POST request to /users. Created user is: ', createdUser);
     res.status(201).json(createdUser);
     return;
@@ -43,16 +44,16 @@ async function createUser(req, res, next) {
 /*  Replace the user with new user data.
  */
 async function replaceUser(req, res, next) {
-  const userId = parseInt(req.params.id);
+  const userId = req.params.id;
 
   let newUser = req.body;
-  newUser["_id"] = userId;
+  newUser._id = userId;
   if (!newUser.name || !newUser.email || !newUser.password) {
     res.status(400).json({ message: "Full information is required" });
     return;
   }
 
-  const replacedUser = await userModel.findOneAndUpdate(
+  const replacedUser = await usersModel.findOneAndUpdate(
     { _id: userId },
     newUser,
     { new: true }
@@ -63,11 +64,11 @@ async function replaceUser(req, res, next) {
 /* Update the user with new user data.
  */
 async function updateUser(req, res, next) {
-  const userId = parseInt(req.params.id);
+  const userId = req.params.id;
 
   let userData = req.body;
-  userData["_id"] = userId;
-  const updatedUser = await userModel.findOneAndUpdate(
+  userData._id = userId;
+  const updatedUser = await usersModel.findOneAndUpdate(
     { _id: userId },
     { $set: userData },
     { new: true }
@@ -77,31 +78,13 @@ async function updateUser(req, res, next) {
 
 /* Delete a user by ID. */
 async function deleteUser(req, res, next) {
-  const userId = parseInt(req.params.id);
+  const userId = req.params.id;
 
-  const deletedUser = await userModel.findByIdAndDelete(userId);
+  const deletedUser = await usersModel.findByIdAndDelete(userId);
   if (deletedUser) {
     res.json({ message: "User deleted successfully" });
   } else {
     res.status(404).json({ message: "Unable to delete user" });
-  }
-}
-
-/* login a user */
-async function login(req, res, next) {
-  //console.log("**** Trying to login user");
-  const { email, password } = req.body;
-  //console.log("**** body is: ", req.body);
-  const user = await userModel.login({ email, password });
-  //const user = {name: "temp", email: "temp@gmail.com", password: "111111"};
-  if (!_.isEmpty(user)) {
-    console.log("**** user is: ", user);
-    res.json(user);
-  } else {
-    console.log("**** user failed to login");
-    res
-      .status(404)
-      .json({ message: "Login failed. Check email and password." });
   }
 }
 
@@ -112,7 +95,7 @@ const usersController = {
   updateUser,
   replaceUser,
   deleteUser,
-  login,
+  getNotes,
 };
 
 module.exports = usersController;

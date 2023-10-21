@@ -1,0 +1,48 @@
+/* Add these styles to your CSS file */
+
+.editable-note {
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 8px;
+  margin: 16px;
+  transition: height 0.3s ease;
+}
+
+.editable-note.expanded {
+  height: 150px; /* Adjust the height as needed */
+}
+
+.editable-note input,
+.editable-note input:focus,
+.editable-note textarea,
+.editable-note textarea:focus {
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+  padding: 8px;
+  border: 0px;
+  font-size: 1em;
+}
+
+/* .editable-note input:focus,
+  .editable-note textarea:focus {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 8px;
+    padding: 8px;
+    border: 0px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+  } */
+
+.editable-note textarea {
+  resize: none;
+}
+
+.editable-note textarea:focus {
+  outline: none;
+  border-color: #4caf50; /* Highlight border color when focused */
+}

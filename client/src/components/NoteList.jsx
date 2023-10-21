@@ -1,17 +1,25 @@
+import "../css/Welcome.css";
 import EmptyNotesIndicator from "./EmptyNotesIndicator";
 import Note from "./Note";
-import { useNotesContext } from "../contexts/NotesContext";
 import "../css/NoteList.css";
+import { useNotesContext } from "../contexts/NotesContext";
+import {sort} from "../utils/utils";
 
-function NoteList() {
+function NoteList({onNoteClick}) {
   const { notes } = useNotesContext();
 
   return (
-    <div className="NoteList">
+    <div>
       {notes.length === 0 ? (
         <EmptyNotesIndicator />
       ) : (
-        notes.map((note) => <Note key={note["_id"]} note={note} />)
+        Object.values(sort(notes)).map((note) => (
+          <Note
+            key={note._id}
+            note={note}
+            onClick={() => onNoteClick(note)}
+          />
+        ))
       )}
     </div>
   );

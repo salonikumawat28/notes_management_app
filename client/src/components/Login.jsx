@@ -19,7 +19,7 @@ function Login() {
 
     console.log("Trying to login ");
     try {
-      const response = await axios.post("http://localhost:9000/login/", userCredentials);
+      const response = await axios.post("http://localhost:9000/auth/login/", userCredentials);
       const user = response.data
       console.log("Response User is: ", JSON.stringify(user));
 

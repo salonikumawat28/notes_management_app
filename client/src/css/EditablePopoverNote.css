@@ -1,0 +1,29 @@
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(
+    0,
+    0,
+    0,
+    0.5
+  ); /* Semi-transparent black background for the blur effect */
+  z-index: 9998; /* Place the backdrop below the popover */
+}
+
+.popover {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 16px;
+  width: 50%; /* Set the width to 50% of the viewport width */
+  height: 50%; /* Set the height to 50% of the viewport height */
+  max-width: 80%; /* Set a maximum width to prevent it from being too wide */
+  max-height: 80vh; /* Set a maximum height to prevent it from being too tall */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 9999; /* Make sure the popover appears above the backdrop */
+}

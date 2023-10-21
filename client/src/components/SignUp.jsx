@@ -19,7 +19,7 @@ function SignUp() {
 
     try {
       const response = await axios.post(
-        "http://localhost:9000/users/",
+        "http://localhost:9000/auth/signup/",
         newUser,
         {
           headers: {

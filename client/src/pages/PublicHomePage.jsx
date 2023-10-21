@@ -3,12 +3,12 @@ import SignUp from "../components/SignUp";
 import PublicInfo from "../components/PublicInfo";
 import PublicHeader from "../components/PublicHeader";
 
-function PublicHomePage(props) {
+function PublicHomePage({showLogin = true}) {
     return (
         <div>
             <PublicHeader />
             <PublicInfo />
-            {props.showLogin ? <Login /> : <SignUp />}
+            {showLogin ? <Login /> : <SignUp />}
         </div>
     );
 }

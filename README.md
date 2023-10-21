@@ -128,23 +128,49 @@ curl -X GET http://localhost:9000/users
 ```
 2. To get a particular user
 ```
-curl -X GET http://localhost:9000/users/1
+curl -X GET http://localhost:9000/users/6533153b41382de92860d15e
 ```
 3. To update partial information of the user
 ```
-curl -X PATCH http://localhost:9000/users/3 -H 'Content-Type: application/json' -d '{"name": "Rita", "password": "123456"}'
+curl -X PATCH http://localhost:9000/users/6533153b41382de92860d15e -H 'Content-Type: application/json' -d '{"name": "Rita", "password": "123456"}'
 ```
 4. To create a new user resource
 ```
-curl -X POST http://localhost:9000/users -H 'Content-Type: application/json' -d '{"name": "Saloni", "email": "sample4@example.com", "password": "123456"}'
+curl -X POST http://localhost:9000/users -H 'Content-Type: application/json' -d '{"name": "Mehul Kumawat", "email": "mehul@example.com", "password": "123456"}'
 ```
 5. To update a user with new user data
 ```
-curl -X PUT http://localhost:9000/users/2 -H 'Content-Type: application/json' -d '{"name": "Saloni", "email": "sample1@example.com", "password": "123456"}'
+curl -X PUT http://localhost:9000/users/6533153b41382de92860d15e -H 'Content-Type: application/json' -d '{"name": "Saloni", "email": "sample1@example.com", "password": "123456"}'
 ```
 6. To delete a user
 ```
-curl -X DELETE http://localhost:9000/users/3
+curl -X DELETE http://localhost:9000/users/6533153b41382de92860d15e
+```
+
+## Notes API
+1. To get all notes:
+```
+curl -X GET http://localhost:9000/notes
+```
+2. To get a particular note
+```
+curl -X GET http://localhost:9000/notes/65331a20eaaf652088beb1df
+```
+3. To update partial information of the note
+```
+curl -X PATCH http://localhost:9000/notes/65331a20eaaf652088beb1df -H 'Content-Type: application/json' -d '{"title": "Updated title"}'
+```
+4. To create a new note resource
+```
+curl -X POST http://localhost:9000/notes -H 'Content-Type: application/json' -d '{"title": "Title 1", "content": "This is note content", "author": "6533153b41382de92860d15e"}'
+```
+5. To update a user with new user data
+```
+curl -X PUT http://localhost:9000/notes/65331a20eaaf652088beb1df -H 'Content-Type: application/json' -d '{"title": "Updated title", "content": "This is new note content", "author": "6533153b41382de92860d15e"}'
+```
+6. To delete a user
+```
+curl -X DELETE http://localhost:9000/notes/65331a20eaaf652088beb1df
 ```
 
 ## Login API
@@ -288,6 +314,7 @@ module.exports = userModel;
 2. Explain and write about the database disconnect logic on server stop
 3. Add curl API for notes in readme
 4. Add in readme that why we are doing window onevetnlistener on storage.
+5. Add doc that we are using long lived access tokens and not short lived + refresh token concept.
 
 ```mermaid
 flowchart LR
