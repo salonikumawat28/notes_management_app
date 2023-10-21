@@ -397,4 +397,41 @@ flowchart LR
     NL --> NV
     
 ```
-    
+Login
+```mermaid
+sequenceDiagram
+    actor Client
+    box rgba(255, 0, 0, 0.1) Frontend
+        participant Chrome
+    end
+    box yellow Backend-Server
+        participant R as Router
+        participant Co as controller
+        participant M as Model
+        participant Mo as Moongose
+    end
+    box rgba(255, 0, 0, 0.1) Database
+        participant Database
+    end
+    Client ->> Chrome:/login
+    Chrome ->> R: Login Request(Emaill, password)
+    R ->> Co: AuthController with request(email, password)
+    Note over Co: Validate Input request
+    Co ->> M: call Login method with param(email, password)
+
+    M ->> Mo: 1. Validate Email Exist
+    Mo ->> Database: get user(email)
+    Database ->> Mo: If email exist return user else return error
+    Mo ->> M: If email exist return user else return error
+
+    M ->> Mo: 2. Compare Password
+    Mo ->> Database: get password of this email
+    Database ->> Mo: password from db
+    Note over Mo: compare password from user with password from db
+    Mo ->> M: If password does not matches return error
+
+    Note over M: Create access token
+    M ->> Co: access token 
+    Co ->> R: access token
+    R ->> Chrome: access token
+```
