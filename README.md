@@ -340,7 +340,7 @@ graph TB
     subgraph Backend-server
         R(Router) --> Co(Controller)
         Co --> R
-        Co <--> M(Model)
+        Co --> M(Model)
         M --> Co
         M --> Mo(Mongoose)
         Mo --> M
