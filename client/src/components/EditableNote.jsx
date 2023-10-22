@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import apiClient from "../apiClient";
 import "../css/EditableNote.css";
 import { useNotesContext } from "../contexts/NotesContext";
-import { useAuthContext } from "../contexts/AuthContext";
 
 function EditableNote({
   initialNote = {},
@@ -10,7 +9,6 @@ function EditableNote({
   onOutsideClick = () => {},
 }) {
   const { notes, setNotes } = useNotesContext();
-  const {user} = useAuthContext();
   console.log("Initial editable note: ", initialNote);
   const [note, setNote] = useState(initialNote);
   const editableNoteRef = useRef(null);
@@ -36,8 +34,8 @@ function EditableNote({
 
     async function saveOrUpdateNote() {
       const response = !note._id
-        ? await axios.post("http://localhost:9000/users/" + user._id + "/notes/", {note, author: user._id})
-        : await axios.put("http://localhost:9000/users/" + user._id + "/notes/", note);
+        ? await apiClient.post("http://localhost:9000/notes/", note)
+        : await apiClient.put("http://localhost:9000/notes/", note);
       const editedNote = response.data;
       if (editedNote._id) {
         setNotes({...notes, [editedNote._id]: editedNote});

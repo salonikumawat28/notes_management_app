@@ -1,16 +1,14 @@
 import { useContext, useState, createContext, useEffect } from "react";
-import axios from "axios";
-import { useAuthContext } from "./AuthContext";
+import apiClient from '../apiClient';
 
 const NotesContext = createContext();
 
 export function NotesContextProvider({ children }) {
   const [notes, setNotes] = useState({});
-  const {user} = useAuthContext(); 
 
   useEffect(() => {
-    axios
-      .get("http://localhost:9000/users/" + user._id + "/notes")
+    apiClient
+      .get("http://localhost:9000/notes/")
       .then((response) => setNotes(response.data))
       .catch((error) => console.error("Error fetching notes:", error));
   }, []);

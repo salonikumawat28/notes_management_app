@@ -2,9 +2,10 @@ const mongoose = require("mongoose");
 // const AutoIncrementFactory = require("mongoose-sequence");
 // const AutoIncrement = AutoIncrementFactory(mongoose);
 const _ = require('underscore');
+const config = require("../config");
 
 // Note: Setting _id to false so that mongoose doesn't auto create the _id.
-const userSchema = new mongoose.Schema(
+const usersSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -32,8 +33,25 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 6,
     },
+    _createdAt: Date,
+    _updatedAt: Date,
   }
 );
+usersSchema.set('maxTimeMS', config.dbTimeoutInMs);
+
+usersSchema.pre('save', function(next) {
+  const currentDate = new Date();
+
+  // Update the _updatedAt field
+  this._updatedAt = currentDate;
+
+  // If the document is new, set the _createdAt field
+  if (!this._createdAt) {
+    this._createdAt = currentDate;
+  }
+
+  next();
+});
 // ,{ _id: false }
 
 // Auto increment.
@@ -59,6 +77,6 @@ const userSchema = new mongoose.Schema(
 //   return null;
 // };
 
-const usersModel = mongoose.model("User", userSchema);
+const usersModel = mongoose.model("User", usersSchema);
 
 module.exports = usersModel;

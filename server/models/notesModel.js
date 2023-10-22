@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const config = require("../config");
 // const AutoIncrementFactory = require("mongoose-sequence");
 
 // const AutoIncrement = AutoIncrementFactory(mongoose);
@@ -8,22 +9,37 @@ const notesSchema = new mongoose.Schema(
   {
     title: String,
     content: String,
-    created: {
-      type: Date,
-      default: Date.now,
-    },
-    modified: {
-      type: Date,
-      default: Date.now,
-    },
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
       index: true,
     },
+    _createdAt: Date,
+    _updatedAt: Date,
   }
 );
+notesSchema.set('maxTimeMS', config.dbTimeoutInMs);
+
+notesSchema.pre('save', function(next) {
+  console.log("***** baba");
+  const currentDate = new Date();
+
+  // Update the _updatedAt field
+  this._updatedAt = currentDate;
+
+  // If the document is new, set the _createdAt field
+  if (!this._createdAt) {
+    this._createdAt = currentDate;
+  }
+
+  next();
+});
+
+notesSchema.pre('findOneAndUpdate', function(next) {
+  this.set({ _updatedAt: new Date() });
+  next();
+});
 
 // { _id: false }
 

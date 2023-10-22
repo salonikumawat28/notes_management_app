@@ -1,10 +1,11 @@
 import { useState } from "react";
 import "../css/SignUp.css";
-import axios from "axios";
-import { Link } from 'react-router-dom';
-import _ from "underscore";
+import apiClient from "../apiClient";
+import { Link } from "react-router-dom";
+import { useAuthContext } from "../contexts/AuthContext";
 
 function SignUp() {
+  const { setAuthToken } = useAuthContext();
   const [newUser, setNewUser] = useState({ name: "", email: "", password: "" });
 
   async function signUpUser(event) {
@@ -18,23 +19,16 @@ function SignUp() {
     // };
 
     try {
-      const response = await axios.post(
+      const response = await apiClient.post(
         "http://localhost:9000/auth/signup/",
-        newUser,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        newUser
       );
       // const response = await fetch("http://localhost:9000/users/", requestInfo);
       //   console.log("response daya is: ", response.data);
       // const signedUpUser = await response.json();
-      const signedUpUser = response.data;
-      const userId = _.get(signedUpUser, "_id");
-      if (userId) {
-        localStorage.setItem("user", signedUpUser);
-        setNewUser(signedUpUser);
+      const authToken = response.data.authToken;
+      if (authToken) {
+        setAuthToken(authToken);
       }
     } catch (error) {
       console.error("Error:", error.message);

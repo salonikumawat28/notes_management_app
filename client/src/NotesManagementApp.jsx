@@ -6,20 +6,7 @@ import "./css/NotesManagementApp.css";
 import {BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 function NotesMangementApp() {
-  const { isLoggedIn, setUser } = useAuthContext();
-
-  // To handle cross-tab login/logout changes.
-  useEffect(() => {
-    function handleStorageChange(event) {
-      if (event.key === "user") {
-        setUser(!!localStorage.getItem("user"));
-      }
-    }
-
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
+  const { authToken } = useAuthContext();
 
   return (
     <div className="Box">
@@ -28,7 +15,7 @@ function NotesMangementApp() {
           <Route
             path="/"
             element={
-              isLoggedIn ? (
+              authToken ? (
                 <AuthHomePage />
               ) : (
                 <PublicHomePage showLogin={true} />
@@ -38,7 +25,7 @@ function NotesMangementApp() {
           <Route
             path="/login"
             element={
-              isLoggedIn ? (
+              authToken ? (
                 <Navigate to="/" />
               ) : (
                 <PublicHomePage showLogin={true} />
@@ -48,7 +35,7 @@ function NotesMangementApp() {
           <Route
             path="/signup"
             element={
-              isLoggedIn ? (
+              authToken ? (
                 <Navigate to="/" />
               ) : (
                 <PublicHomePage showLogin={false} />

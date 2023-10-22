@@ -1,114 +1,101 @@
-const { NotFoundError, BadRequestError } = require("../errors");
-const notesModel = require("../models/notesModel");
-const usersModel = require("../models/usersModel");
+const { NotFoundError, ValidationError } = require("../errors");
+const notesService = require("../services/notesService");
 
 /* Get notes listing. */
 async function getNotes(req, res, next) {
   // Sanity check if user authorized.
-  if (!req.userId) {
+  if (!req.authenticatedUserId) {
     return next(new UnauthorizedError("No token provided"));
   }
 
   // Get notes for the user.
-  const notes = await notesModel
-    .find({ author: req.userId }, "-author -__v")
-    .lean();
-  console.log("Notes are: ", notes);
-  res.send(notes);
-
-  //   // Convert notes array to notes object.
-  //   const notesObject = notes.reduce((acc, note) => {
-  //     acc[note._id] = note;
-  //     return acc;
-  //   }, {});
-  //   res.send(notesObject);
+  const authorId = req.authenticatedUserId;
+  notesService
+    .getNotes(authorId)
+    .then((notes) => res.send(notes))
+    .catch((error) => next(error));
 }
 
 /* Get a specific note by ID. */
 async function getNote(req, res, next) {
   // Sanity check if user authorized.
-  if (!req.userId) {
+  if (!req.authenticatedUserId) {
     return next(new UnauthorizedError(" No token provided"));
   }
 
   // Get note by id.
   const noteId = req.params.id;
-  const note = await notesModel.findOne({ _id: noteId, author: req.userId }, "-author -__v");
-  if (!note) {
-    return next(new NotFoundError("Note not found."));
-  }
-  res.json(note);
+  const authorId = req.authenticatedUserId;
+  notesService
+    .getNote(noteId, authorId)
+    .then((note) => res.json(note))
+    .catch((error) => next(error));
 }
 
 /* Create a new note. */
 async function createNote(req, res, next) {
   // Sanity check if user authorized.
-  if (!req.userId) {
+  if (!req.authenticatedUserId) {
     return next(new UnauthorizedError("No token provided"));
   }
 
   // Validate request inputs.
-  let newNote = req.body;
-  if (!newNote.content && !newNote.title) {
-    return next(new BadRequestError("Either title or content is required"));
+  let noteToCreate = req.body;
+  if (!noteToCreate.content && !noteToCreate.title) {
+    return next(new ValidationError("Either title or content is required"));
   }
 
-  const createdNote = await notesModel.create(newNote);
-  res.status(201).json(createdNote);
-}
-
-/*  Replace the note with new note data.
- */
-async function replaceNote(req, res, next) {
-  const noteId = req.params.id;
-
-  let newNote = req.body;
-  newNote["_id"] = noteId;
-  if (!newNote.content) {
-    res.status(400).json({ message: "Full Name is required" });
-    return;
-  }
-
-  const replacedNote = await notesModel.findOneAndUpdate(
-    { _id: noteId },
-    newNote,
-    { new: true }
-  );
-  res.json(replacedNote);
+  // Create note.
+  const authorId = req.authenticatedUserId;
+  notesService
+    .createNote(noteToCreate, authorId)
+    .then((createdNote) => res.status(201).json(createdNote))
+    .catch((error) => next(error));
 }
 
 /* Update the note with new note data.
  */
 async function updateNote(req, res, next) {
-  const noteId = req.params.id;
+  // Sanity check if user authorized.
+  if (!req.authenticatedUserId) {
+    return next(new UnauthorizedError("No token provided"));
+  }
 
-  let noteData = req.body;
-  noteData["_id"] = noteId;
-  const updatedNote = await userModel.findOneAndUpdate(
-    { _id: noteId },
-    { $set: noteData },
-    { new: true }
-  );
-  res.json(updatedNote);
+  // Validate request inputs.
+  let noteDataToUpdate = req.body;
+  if (noteDataToUpdate._id && noteDataToUpdate._id !== req.params.id) {
+    return next(new ValidationError("Note id doesn't match with URL note id."));
+  }
+  
+  // Update the note.
+  const authorId = req.authenticatedUserId;
+  const noteId = req.params.id;
+  notesService
+    .updateNote(noteDataToUpdate, noteId, authorId)
+    .then((updatedNote) => res.json(updatedNote))
+    .catch((error) => next(error));
 }
 
-/* Delets a note by ID. */
+/* Deletes a note by ID. */
 async function deleteNote(req, res, next) {
-  const noteId = req.params.id;
-
-  const deletedNote = await notesModel.findByIdAndDelete(noteId);
-  if (deletedNote) {
-    res.json({ message: "Note deleted successfully" });
-  } else {
-    res.status(404).json({ message: "Unable to delete note" });
+  // Sanity check if user authorized.
+  if (!req.authenticatedUserId) {
+    return next(new UnauthorizedError("No token provided"));
   }
+
+  // Delete note.
+  const noteId = req.params.id;
+  const authorId = req.authenticatedUserId;
+  notesService
+    .deleteNote(noteId, authorId)
+    .then((response) => res.json(response))
+    .catch((error) => next(error));
 }
 
 const notesController = {
   getNotes,
   getNote,
   createNote,
-  replaceNote,
   updateNote,
   deleteNote,
 };

@@ -1,33 +1,24 @@
 import { useState } from "react";
 import { useAuthContext } from "../contexts/AuthContext";
 import "../css/Login.css";
-import _ from "underscore";
-import axios from "axios";
+import apiClient from "../apiClient";
 import { Link } from 'react-router-dom';
 
 function Login() {
-  const { setUser } = useAuthContext();
+  const { setAuthToken } = useAuthContext();
   const [userCredentials, setUserCredentials] = useState({
     email: "",
     password: "",
   });
 
-  
-
   async function login(event) {
     event.preventDefault(); // Prevent the default form submission behavior
 
-    console.log("Trying to login ");
     try {
-      const response = await axios.post("http://localhost:9000/auth/login/", userCredentials);
-      const user = response.data
-      console.log("Response User is: ", JSON.stringify(user));
-
-      // Getting the user id from the user we get from fetch call
-      const userId = _.get(user, "_id");
-      if (userId) {
-        localStorage.setItem("user", user);
-        setUser(user);
+      const response = await apiClient.post("http://localhost:9000/auth/login/", userCredentials);
+      const authToken = response.data.authToken;
+      if (authToken) {
+        setAuthToken(authToken);
       }
     } catch (error) {
       console.log("Error is: ", JSON.stringify(error));

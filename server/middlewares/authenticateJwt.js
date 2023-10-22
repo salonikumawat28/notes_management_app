@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
-const { secretKey } = require('../config');
-const { UnauthorizedError } = require('./errors');
+const config = require('../config');
+const { UnauthorizedError } = require('../errors');
 
 const authenticateJWT = (req, res, next) => {
     // Check if request has authorization header.
@@ -17,10 +17,10 @@ const authenticateJWT = (req, res, next) => {
 
   try {
     // Verify and decode the JWT token
-    const decodedToken = jwt.verify(token, secretKey);
+    const decodedToken = jwt.verify(token, config.secretKey);
 
     // Attach the decoded token to the request for further use if needed
-    req.userId = decodedToken.userId;
+    req.authenticatedUserId = decodedToken.userId;
 
     // Continue with the next middleware or route handler
     next();

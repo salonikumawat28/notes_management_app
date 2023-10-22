@@ -1,27 +1,20 @@
 var express = require('express');
 const usersController = require('../controllers/usersController');
+const authenticateJWT = require('../middlewares/authenticateJwt');
 var router = express.Router();
 
-/* Get users listing. */
-router.get('/', usersController.getUsers);
+/* Return the current(who sent request) user */
+router.get('/me', authenticateJWT, usersController.getUser);
 
-/* Get a specific user by ID. */
-router.get('/:id', usersController.getUser);
-
-/* Create a new user. */
-router.post('/', usersController.createUser);
-
-/*  Update the user with new user data. 
-* Note: Put method entirely replaces existing user data with new user data.
-*/
-router.put('/:id', usersController.replaceUser);
-
-/* Update the user with new user data.
+/* Update the current with new user data.
 * Note: Patch method merges the new user data with existing user data.
 */
-router.patch('/:id', usersController.updateUser);
+router.patch('/me', authenticateJWT, usersController.updateUser);
 
-/* Delets a user by ID. */
-router.delete('/:id', usersController.deleteUser);
+/* Updates the password of the current user. */
+router.delete('/me/password', authenticateJWT, usersController.updatePassword);
+
+/* Deletes the current user. */
+router.delete('/me', authenticateJWT, usersController.deleteUser);
 
 module.exports = router;

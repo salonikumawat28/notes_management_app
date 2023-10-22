@@ -1,7 +1,7 @@
-class BadRequestError extends Error {
+class ValidationError extends Error {
   constructor(message) {
     super(message);
-    this.name = "BadRequestError";
+    this.name = "ValidationError";
     this.statusCode = 400;
   }
 }class UnauthorizedError extends Error {
@@ -30,6 +30,14 @@ class NotFoundError extends Error {
   }
 }
 
+class ConflictError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "ConflictError";
+    this.statusCode = 409;
+  }
+}
+
 class ValidationError extends Error {
   constructor(message) {
     super(message);
@@ -47,10 +55,11 @@ class InternalServerError extends Error {
 }
 
 module.exports = {
-  BadRequestError,
+  ValidationError,
   UnauthorizedError,
   ForbiddenError,
   NotFoundError,
+  ConflictError,
   ValidationError,
   InternalServerError,
 };

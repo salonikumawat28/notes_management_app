@@ -1,101 +1,82 @@
-const usersModel = require("../models/usersModel");
-const notesModel = require("../models/notesModel");
-const _ = require('underscore');
-
-/* Get users listing. */
-async function getUsers(req, res, next) {
-  const users = await usersModel.find({});
-  res.send(users);
-}
+const { UnauthorizedError } = require("../errors");
+const usersService = require("../services/usersService");
+const _ = require("underscore");
 
 /* Get a specific user by ID. */
 async function getUser(req, res, next) {
-  const userId = req.params.id;
-  const user = await usersModel.findById(userId);
-
-  if (user) {
-    res.json(user);
-  } else {
-    res.status(404).json({ message: "User not found" });
-  }
-}
-
-/* Create a new user. */
-async function createUser(req, res, next) {
-  try {
-    console.log('Received POST request to /users');
-    let newUser = req.body;
-    if (!newUser.name || !newUser.email || !newUser.password) {
-      res.status(400).json({ message: "Full information is required" });
-      return;
-    }
-  
-    const createdUser = await usersModel.create(newUser);
-    console.error('Successfully processed POST request to /users. Created user is: ', createdUser);
-    res.status(201).json(createdUser);
-    return;
-  } catch(error) {
-    console.error('Error processing POST request to /users:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-    return;
-  }
-}
-
-/*  Replace the user with new user data.
- */
-async function replaceUser(req, res, next) {
-  const userId = req.params.id;
-
-  let newUser = req.body;
-  newUser._id = userId;
-  if (!newUser.name || !newUser.email || !newUser.password) {
-    res.status(400).json({ message: "Full information is required" });
-    return;
+  // Sanity check if user authorized.
+  if (!req.authenticatedUserId) {
+    return next(new UnauthorizedError("No token provided"));
   }
 
-  const replacedUser = await usersModel.findOneAndUpdate(
-    { _id: userId },
-    newUser,
-    { new: true }
-  );
-  res.json(replacedUser);
+  // Get user by id.
+  usersService
+    .getUser(req.authenticatedUserId)
+    .then((user) => res.json(user))
+    .catch((error) => next(error));
 }
+
+// TODO: while updating user or notes, just take those fields which we return.
 
 /* Update the user with new user data.
  */
 async function updateUser(req, res, next) {
-  const userId = req.params.id;
+  // Sanity check if user authorized.
+  if (!req.authenticatedUserId) {
+    return next(new UnauthorizedError("No token provided"));
+  }
 
-  let userData = req.body;
-  userData._id = userId;
-  const updatedUser = await usersModel.findOneAndUpdate(
-    { _id: userId },
-    { $set: userData },
-    { new: true }
-  );
-  res.json(updatedUser);
+  // Validate request inputs.
+  let userDataToUpdate = req.body;
+  if (userDataToUpdate._id && userDataToUpdate._id !== req.authenticatedUserId) {
+    return next(new ValidationError("User id doesn't match with URL user id."));
+  }
+
+  // Update the user.
+  usersService
+    .updateUser(userDataToUpdate, req.authenticatedUserId)
+    .then((updatedUser) => res.json(updatedUser))
+    .catch((error) => next(error));
 }
 
-/* Delete a user by ID. */
-async function deleteUser(req, res, next) {
-  const userId = req.params.id;
-
-  const deletedUser = await usersModel.findByIdAndDelete(userId);
-  if (deletedUser) {
-    res.json({ message: "User deleted successfully" });
-  } else {
-    res.status(404).json({ message: "Unable to delete user" });
+async function updatePassword(req, res, next) {
+  // Sanity check if user authorized.
+  if (!req.authenticatedUserId) {
+    return next(new UnauthorizedError("No token provided"));
   }
+
+  // Validate request inputs.
+  let {password} = req.body;
+  if (!password) {
+    return next(new ValidationError("No password given to update."));
+  }
+
+  // Update the user.
+  usersService
+    .updatePassword(password, req.authenticatedUserId)
+    .then((response) => res.json(response))
+    .catch((error) => next(error));
+}
+
+/* Deletes a user by ID. */
+async function deleteUser(req, res, next) {
+  // Sanity check if user authorized.
+  if (!req.authenticatedUserId) {
+    return next(new UnauthorizedError("No token provided"));
+  }
+
+  // Delete note.
+  usersService
+    .deleteUser(req.authenticatedUserId)
+    .then((response) => res.json(response))
+    .catch((error) => next(error));
 }
 
 const usersController = {
-  getUsers,
   getUser,
-  createUser,
   updateUser,
-  replaceUser,
+  updatePassword,
   deleteUser,
-  getNotes,
 };
 
 module.exports = usersController;

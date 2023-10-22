@@ -3,10 +3,10 @@
 /**
  * Module dependencies.
  */
-require('./db/connectDatabase'); // Require the file to start database connection
+require('../db/connectDatabase'); // Require the file to start database connection
 const mongoose = require("mongoose");
 var app = require('../app');
-var debug = require('debug')('server:server');
+// var debug = require('debug')('server:server');
 var http = require('http');
 
 /**
@@ -27,6 +27,10 @@ var server = http.createServer(app);
  */
 mongoose.connection.on('connected', () => {
   console.log('Mongoose connected to the database.');
+  if (server.listening) {
+    return;
+  }
+  
   server.listen(port);
   server.on('error', onError);
   server.on('listening', onListening);

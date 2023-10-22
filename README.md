@@ -121,62 +121,56 @@ There are lot of files which you don't want to part of git. Example: generated f
 ## Curl commands
 Below are samples of CURl commands for server API:
 
-### User API
-1. To get all users,
+## Auth API
+1. To signup:
 ```
-curl -X GET http://localhost:9000/users
+curl -X POST http://localhost:9000/auth/signup -H 'Content-Type: application/json' -d '{"name": "First1 Last1", "email": "test3@test.com", "password": "test1234"}'
+```
+2. To login:
+```
+curl -X POST http://localhost:9000/auth/login -H 'Content-Type: application/json' -d '{"email": "test2@test.com", "password": "test1234"}'
+```
+
+### User API
+1. Set auth token in command line:
+```
+export TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTM1OTQ4ZGI3ZGVmZTI5NmI2ODEzZmIiLCJpYXQiOjE2OTgwMTAyNTN9.TfDaNJ3wtzAESWQb7BrFV6vUkRZDaqPvv_XRe8KGOWA
 ```
 2. To get a particular user
 ```
-curl -X GET http://localhost:9000/users/6533153b41382de92860d15e
+curl -X GET http://localhost:9000/users/me -H "Authorization: Bearer $TOKEN"
 ```
 3. To update partial information of the user
 ```
-curl -X PATCH http://localhost:9000/users/6533153b41382de92860d15e -H 'Content-Type: application/json' -d '{"name": "Rita", "password": "123456"}'
-```
-4. To create a new user resource
-```
-curl -X POST http://localhost:9000/users -H 'Content-Type: application/json' -d '{"name": "Mehul Kumawat", "email": "mehul@example.com", "password": "123456"}'
-```
-5. To update a user with new user data
-```
-curl -X PUT http://localhost:9000/users/6533153b41382de92860d15e -H 'Content-Type: application/json' -d '{"name": "Saloni", "email": "sample1@example.com", "password": "123456"}'
+curl -X PATCH http://localhost:9000/users/me -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"name": "updated First1 Lastt1"}'
 ```
 6. To delete a user
 ```
-curl -X DELETE http://localhost:9000/users/6533153b41382de92860d15e
+curl -X DELETE http://localhost:9000/users/me -H "Authorization: Bearer $TOKEN"
 ```
 
 ## Notes API
-1. To get all notes:
 ```
-curl -X GET http://localhost:9000/notes
+1. To create a new note resource
 ```
-2. To get a particular note
-```
-curl -X GET http://localhost:9000/notes/65331a20eaaf652088beb1df
-```
-3. To update partial information of the note
-```
-curl -X PATCH http://localhost:9000/notes/65331a20eaaf652088beb1df -H 'Content-Type: application/json' -d '{"title": "Updated title"}'
-```
-4. To create a new note resource
-```
-curl -X POST http://localhost:9000/notes -H 'Content-Type: application/json' -d '{"title": "Title 1", "content": "This is note content", "author": "6533153b41382de92860d15e"}'
-```
-5. To update a user with new user data
-```
-curl -X PUT http://localhost:9000/notes/65331a20eaaf652088beb1df -H 'Content-Type: application/json' -d '{"title": "Updated title", "content": "This is new note content", "author": "6533153b41382de92860d15e"}'
-```
-6. To delete a user
-```
-curl -X DELETE http://localhost:9000/notes/65331a20eaaf652088beb1df
-```
+curl -X POST http://localhost:9000/notes -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Test 2 Title 4", "content": "Test 2 content 4"}'
 
-## Login API
-1. To login user
+export NOTE_ID=6535948db7defe296b6813fb
 ```
-curl -X POST http://localhost:9000/login -H 'Content-Type: application/json' -d '{"email": "manish@example.com", "password": "111111"}'
+2. To update partial information of the note
+```
+curl -X PATCH http://localhost:9000/notes/$NOTE_ID -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Updated Test 2 Title 3"}'
+```
+3. To get a particular note
+```
+curl -X GET http://localhost:9000/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
+4. To get all notes:
+```
+curl -X GET http://localhost:9000/notes -H "Authorization: Bearer $TOKEN"
+```
+5. To delete a note
+```
+curl -X DELETE http://localhost:9000/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
 ```
 
 ## Underscore Library
