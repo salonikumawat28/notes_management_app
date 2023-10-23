@@ -926,6 +926,46 @@ style NContect fill:#ffffcc
   
 -->
 
+<!--
+```mermaid
+sequenceDiagram
+    actor Client
+    box rgba(255, 0, 0, 0.1) Frontend
+        participant Chrome
+    end
+    box yellow Backend-Server
+        participant R as Router
+        participant Co as controller
+        participant M as Model
+        participant Mo as Moongose
+    end
+    box rgba(255, 0, 0, 0.1) Database
+        participant Database
+    end
+    Client ->> Chrome:/login
+    Chrome ->> R: Login Request(Emaill, password)
+    R ->> Co: AuthController with request(email, password)
+    Note over Co: Validate Input request
+    Co ->> M: call Login method with param(email, password)
+
+    M ->> Mo: 1. Validate Email Exist
+    Mo ->> Database: get user(email)
+    Database ->> Mo: If email exist return user else return error
+    Mo ->> M: If email exist return user else return error
+
+    M ->> Mo: 2. Compare Password
+    Mo ->> Database: get password of this email
+    Database ->> Mo: password from db
+    Note over Mo: compare password from user with password from db
+    Mo ->> M: If password does not matches return error
+
+    Note over M: Create access token
+    M ->> Co: access token
+    Co ->> R: access token
+    R ->> Chrome: access token
+```
+-->
+
 
 <table>
 <tr>
@@ -1389,192 +1429,7 @@ curl -X DELETE http://localhost:9000/api/notes/$NOTE_ID -H "Authorization: Beare
 </td>
 </tr>
 
-```
-flowchart TB
-subgraph Client
-    RequestStart[Request From frontend]
-end
-subgraph Server
-    direction TB
-    ExpressApp[<b>Express.js App</b>]
-    Cors[<b>Cors</b> <br> Add cors to response]
-    JsonParser[<b>Json Parser</b> <br> Convert json to js object in request body]
-    RouterCondition{Decide Router <br/>based on URL}
-    Router[<b>Router</b><br/>Decides sub-routing of the URL.]
-    RequestPreProcessor[<b>Request pre processor</b><br/>Pre process the request]
-    RequestValidator[<b>Request validator</b><br/>Validates the request<br/>Short circuits to error middleware if validation fails.]
-    Authenticator[<b>Authenticator</b><br/>Check if user is authenticated<br/>Short circuits to error middleware if authentication fails.]
-    Controller[<b>Controller layer</b><br/>Controller to handle request, call service and create response.<br/>Goes to error middlware in case of any errors.]
-    Service[<b>Service layer</b><br/> Service to handle business logic]
-    Model[<b>Model layer</b><br/>Mongoose models for database communication]
-end
-subgraph Database
-    Db[<b>Database</b><br/> MongoDB]
-end
 
-RequestStart <--> |1. Client request.<br/>17. Send resposne to client| ExpressApp
-ExpressApp --> |2. Request & response to fill in.| Cors
-Cors --> |3. req, res with cors headers.| JsonParser
-JsonParser --> |4. req with js object body, res| RouterCondition
-RouterCondition --> |5. calls router specific to URL.| Router
-Router --> |6. calls sub-router middlewares| RequestPreProcessor
-RequestPreProcessor --> |7. pre-processed req, res| RequestValidator
-RequestValidator --> |8. valdiated req, res| Authenticator
-Authenticator --> |9. authenticated req, res | Controller
-Controller --> |10. calls service layer| Service
-Service <--> |11. calls model layer for db communication| Model
-Model <--> |12. calls db for CRUD operations<br/>13. Database returns response.| Database
-Model --> |14. returns data| Service
-Service --> |15. returns data| Controller
-Controller --> |16. send response with data| ExpressApp
-```
-
-```
-flowchart LR
-    subgraph client
-    Request
-    end
-    client --> Router
-    subgraph server
-    Router --> Controller
-    Controller --> Model
-    Model --> Mongoose
-    end
-    subgraph DataBase
-    DB
-    end
-    Mongoose --> DataBase
-```
-
-```
-graph TB
-    subgraph User
-    U(/login)
-    end
-    User --> Web-API
-    subgraph Chrome
-        direction TB
-        subgraph Web-API
-        Re(Request)
-        Res(Response)
-        end
-        Res --> Pr(Parse Response)
-        Pr --> L{Logged In}
-        L -->|Yes| AH(AuthHome Page)
-        L -->|No| PH(PublicHome page)
-        AH --> NC(NotesContex Provider)
-        NC --> NL(NoteList
-                Component) --> G(Get call)
-    end
-    subgraph Frontend-Server
-        Has{Does
-            client
-            has
-            latest
-            version
-            cached?}
-        HCJ(HTML
-            CSS
-            Javascript)
-    end
-    subgraph Backend-server
-        R(Router) --> Co(Controller)
-        Co --> R
-        Co --> M(Model)
-        M --> Co
-        M --> Mo(Mongoose)
-        Mo --> M
-    end
-    subgraph DataBase
-        DB
-    end
-    Re-->Has
-    Has --Nothing To update------> Res
-    Has --> HCJ --Updated data--> Res
-    Mo --> DataBase
-    DataBase --> Mo
-    G --> R
-    R --> G
-```
-
-```
-flowchart LR
-    subgraph User
-    CL(Click Login Button)
-    end
-    subgraph Chrome
-    S(Submit)
-    AC(AuthContext page)
-    AH(AuthHome Page)
-    NL(NoteList)
-    NV(NoteView)
-
-    end
-    subgraph Backened-Server
-    R(Router)
-    Co(Controller)
-    M(Model)
-    Mo(Mongoose)
-    R --> Co
-    Co --> M
-    M --> Mo
-    Mo --> M
-    M --> Co
-    Co --> R
-    end
-    subgraph Database
-    Db
-    end
-    NL -- Get call --> R
-    R --List of Notes --> NL
-    CL --> S
-    Mo --> Database
-    Database --> Mo
-    S -- Post call --> R
-    R -- Logged In User --> AC
-    AC -- setUser state --> AH
-    AH --> NL
-    NL --> NV
-
-```
-
-```
-sequenceDiagram
-    actor Client
-    box rgba(255, 0, 0, 0.1) Frontend
-        participant Chrome
-    end
-    box yellow Backend-Server
-        participant R as Router
-        participant Co as controller
-        participant M as Model
-        participant Mo as Moongose
-    end
-    box rgba(255, 0, 0, 0.1) Database
-        participant Database
-    end
-    Client ->> Chrome:/login
-    Chrome ->> R: Login Request(Emaill, password)
-    R ->> Co: AuthController with request(email, password)
-    Note over Co: Validate Input request
-    Co ->> M: call Login method with param(email, password)
-
-    M ->> Mo: 1. Validate Email Exist
-    Mo ->> Database: get user(email)
-    Database ->> Mo: If email exist return user else return error
-    Mo ->> M: If email exist return user else return error
-
-    M ->> Mo: 2. Compare Password
-    Mo ->> Database: get password of this email
-    Database ->> Mo: password from db
-    Note over Mo: compare password from user with password from db
-    Mo ->> M: If password does not matches return error
-
-    Note over M: Create access token
-    M ->> Co: access token
-    Co ->> R: access token
-    R ->> Chrome: access token
-```
 
 # Rough
 
