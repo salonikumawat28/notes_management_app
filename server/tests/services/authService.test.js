@@ -12,6 +12,11 @@ chai.use(chaiAsPromised);
 const { expect } = chai;
 
 describe("Auth Service", () => {
+  // Restore stubs after tests are complete
+  afterEach(() => {
+    sinon.restore();
+  });
+
   describe("signUp", () => {
     it("should create a new user and return an auth token on successful signUp", async () => {
       const userData = {
@@ -42,12 +47,6 @@ describe("Auth Service", () => {
 
       // Verify that the returned auth token is as expected
       expect(authToken).to.equal("mockAuthToken");
-
-      // Restore the stubbed functions to their original implementations
-      usersModel.exists.restore();
-      usersModel.create.restore();
-      bcrypt.hash.restore();
-      jwt.sign.restore();
     });
 
     it("should throw ConflictError if user with the same email already exists", async () => {
@@ -65,9 +64,6 @@ describe("Auth Service", () => {
         ConflictError,
         "Email already exists."
       );
-
-      // Restore the stubbed function to its original implementation
-      usersModel.exists.restore();
     });
   });
 
@@ -98,11 +94,6 @@ describe("Auth Service", () => {
 
       // Verify that the returned auth token is as expected
       expect(authToken).to.equal("mockAuthToken");
-
-      // Restore the stubbed functions to their original implementations
-      usersModel.findOne.restore();
-      bcrypt.compare.restore();
-      jwt.sign.restore();
     });
 
     it("should throw UnauthorizedError if user with the given email does not exist", async () => {
@@ -121,9 +112,6 @@ describe("Auth Service", () => {
         UnauthorizedError,
         "Invalid credentials."
       );
-
-      // Restore the stubbed function to its original implementation
-      usersModel.findOne.restore();
     });
 
     it("should throw UnauthorizedError if the password does not match", async () => {
@@ -147,10 +135,6 @@ describe("Auth Service", () => {
         UnauthorizedError,
         "Invalid credentials."
       );
-
-      // Restore the stubbed functions to their original implementations
-      usersModel.findOne.restore();
-      bcrypt.compare.restore();
     });
   });
 });

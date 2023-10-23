@@ -9,7 +9,8 @@ async function searchNotes(searchQuery, authorId) {
     )
     .sort({ score: { $meta: "textScore" } })
     .select("_id title content _createdAt _updatedAt")
-    .select({ score: 0 });
+    .select({ score: 0 })
+    .exec();
 }
 
 async function getNotes(authorId) {
