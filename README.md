@@ -358,7 +358,7 @@ Controller --> |16. send response with data| ExpressApp
 
 # Server side - Creating access token
 Mermaid [link](https://www.mermaidchart.com/app/projects/1c640cf4-1f17-42bd-b19c-eec224895dbc/diagrams/a3995b87-20b5-40bf-8c91-42853d6e8f81/version/v0.1/edit)
-![mermaid-diagram-2023-10-23-141351](https://github.com/salonikumawat28/notes_management_app/assets/72411385/5f70b8e6-5d56-4f7f-add8-611086f43643)
+![mermaid-diagram-2023-10-23-143431](https://github.com/salonikumawat28/notes_management_app/assets/72411385/46484929-5d8b-469d-a35e-89805f30d521)
 
 ```
 flowchart LR
