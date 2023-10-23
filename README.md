@@ -799,8 +799,28 @@ Controller --\> |16. send response with data| ExpressApp
 
 # Server side - Creating access token
 
-Mermaid [link](https://www.mermaidchart.com/app/projects/1c640cf4-1f17-42bd-b19c-eec224895dbc/diagrams/e8c5026b-b1eb-4f8e-b635-4b4eca8eddca/version/v0.1/edit)
 ![mermaid-diagram-2023-10-23-151125](https://github.com/salonikumawat28/notes_management_app/assets/72411385/721e06e8-fc72-4d20-a031-46cacc7d3d9a)
+
+<!--
+flowchart TB
+subgraph Controller
+    Co(Auth Controller)
+end
+subgraph Auth-service
+    direction TB
+    E(Get user of email)
+    H(Compare Hash password <br/>&#x28 bycrpt.compare &#x29)
+    J(Create JWT access token)
+end
+subgraph Mongoose-Model
+    Mo(Model layer)
+end
+
+Controller <--\> Auth-service
+Auth-service <--\> Mongoose-Model
+E --\> H
+H --\> J
+-->
 
 # Server side - Authenticate user flow
 
