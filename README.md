@@ -2,7 +2,7 @@
 
 Notes Management App is a one stop solution to create, update and view your notes at one place.
 
-# Project outline
+# Design and Architecture
 ## Backend
 Backend is designed in ExpressJS. We have leveraged common web design principles including REST APIs, stateless server, modularized code etc. Here is how request flow looks like:
 ![mermaid-diagram-2023-10-23-122749](https://github.com/salonikumawat28/notes_management_app/assets/72411385/101ce447-0eff-42a8-b633-a12f00609a46)
@@ -22,17 +22,541 @@ Here are how a client request goes through different parts of the backend server
 12. **Models**: Mongoose models are called to communicate with our MongoDB database. These models does a few important things like creating collections, performing CRUD operations, indexing databases on text for faster search of sub-strings, auto-updating values like `createdAt`, `modifiedAt` fields.
 13. **Database**: We are using MongoDb database for notes and user management. We will discuss more about it in later sections.
 ## Database
-We are using MongoDB database which is a NoSQL database to manage notes and users. This is the schema we currently have:
-![mermaid-diagram-2023-10-23-172740](https://github.com/salonikumawat28/notes_management_app/assets/72411385/f790b27e-d993-4f60-a1bb-38027e7841e6)
+We are using MongoDB database which is a NoSQL database to manage notes and users. 
+### Why NoSQL?
+We have chosen NoSQL over SQL for this project because of various reasons:
+1. **No ACID**: We have no requriments of any ACID transactions in any requests as of now.
+2. **Development Speed**: NoSQL databases are easy and fast to setup and thus it makes development quicker especially in intiial phases.
+3. **Scalability and Avalabiltiy**: NoSQL databases are easily scaled horizontally, can be distributed across clusters and thus can be highly available. The same can be done with SQL as well but not with that ease.
 ### Schema
-1. We have 2 collections, notes and users (check above diagram for details).
-2. Each user collection has _id, name, email and password.
-3. Each Note collection has _id, title, content, author, _createdAt, _updatedAt fields.
-4. **Author** of Note collection refers to a User document.
+This is the schema we currently have:
+![mermaid-diagram-2023-10-23-172740](https://github.com/salonikumawat28/notes_management_app/assets/72411385/f790b27e-d993-4f60-a1bb-38027e7841e6)
+1. We have 2 collections, `notes` and `users` (check above diagram for details).
+2. Each `user` collection has `_id`, `name`, `email` and `password`.
+3. Each `Note` collection has `_id`, `title`, `content`, `author`, `_createdAt`, `_updatedAt` fields.
+4. `Author` of `Note` collection refers to a `User` document.
 5. A user can have multiple notes but a note can have only one user.
-6. _id and author both are indexed in Note collection so that we can search the note quickly even by user id which is author.
-7. _id and email is indexed in User collection
+6. `_id` and `author` both are indexed in `Note` collection so that we can search the note quickly even by `user id` which is `author`.
+7. `_id` and `email` is indexed in `User` collection so that we can search the user quickly even by `email`.
+8. `title` and `content` are _text indexed_ in `Note` collection which makes sub-string search fast in notes. We will discuss this in further sections
+### Why this schema? Alternatives and Tradeoffs
+There were 3 potential schema choices in front:
+**Approach 1 - Embedding:**
+In this approach, we keep all notes of the user along with user in a single collection. i.e. We can create a collection say `UserNotes` with fields like `_id`, `name`, `email`, `password`, `notes` where `notes` is array of notes of the user. This is simple approach and good for read-heavy workloads but this approach may lead to document growth and potential data duplication. Example: Once we add feature of sharing notes with other users, we have to duplicate same note in all the users collections.
+**Approach 2 - References with Array of Note IDs:**
+In this approach, we modify the approach 1 and keep the array of note ids in the `user` collection and the actual notes stay in a separate collection. i.e. Note is not aware of its author but User is aware of all of its notes. This appoach separates the data concerns, address note duplicity problem but this approach might require multiple queries for a result. For example, to search a text in all the notes of a user, we first need to get all the note ids of the user and then query those notes with the search tex.t
+**Approach 3 - References with Author Field:**
+In this approach, `user` collection is not aware of the note it owns. Instead we do opposite of approach 2 i.e. Each note document has the user id. This approach doesn't result in multiple queries for text search and other queries which we generally use. **Because of these reasons, we are using Approach 3.**
+### Text indexing - What and Why?
+Searching a small string within a large string is a time consuming task. We have a search feature where user can search for a text and we should show the notes which has that seached text and the results should be shown in sorted order of search rank. Best approach to save time consumed in search is to _text index_ the fields to be searched. 
+As part of text indexing, MongoDB does following:
+1. Tokenization: When we create a text index, MongoDB tokenizes the text in the specified fields. Tokenization involves breaking down the text into individual words or tokens.
+2. Stemming: MongoDB also applies stemming during text indexing. Stemming reduces words to their root or base form, so variations of a word (e.g., "running" and "ran") are treated as the same.
+3. Search Functionality: Once the text index is created, we can use the `$text` operator in queries to perform text searches. For example, we might use queries like { $text: { $search: 'keyword' } } to find documents containing a specific keyword in the indexed fields.
 
+**Note**: This approach is more meaningful when the data to be searched against is quite large and the dataset is accessible by a large set of users. This makes the _text indexing_ more useful as it saves lot of computation time.
+## FrontEnd
+FrontEnd is designed in ReactJs. We leverage ReactJS features for state management in UI. Here is how the FrontEnd structure looks like:
+![mermaid-diagram-2023-10-23-203732](https://github.com/salonikumawat28/notes_management_app/assets/72411385/16bdbf5c-7f17-40e2-82dd-9a087cad0b59)
+### FrontEnd server in nutshell
+Here is a brief explanation of the FrontEnd structure:
+1. Rendering starts from `index.js` which calls `App` component
+2. **App** component: App component provides the authentication context so that all child components can get or set authentication data. In addition, App component also calls `NotesManagementApp` to render the UI.
+3. **AuthContext**: Consolidated place where authenticationd data is present. This data is also hooked to React state and thus re-renderers all the UI components users whenever auth data changes. This magic allows auto-rendering of authenticated page when user logs in and auto-rendering of public page when user logs out.
+4. **Notes management app**: This is just a wrapper holding client side Router.
+5. **Router**: This client side router routes to specific compoents based on URL and authentication state. Example: if URL is /signup but user is logged in, user will be routed to Authenticated home page component.
+6. **Public Home Page**: Public home page is reponsible to show UI when user is not logged in. Based on URL, it can show login page or signup page.
+7. **Authenticated Home Page**: Authenticated home page shows authenticated page when user is logged in. In addition, this component also provides the notes context so that all child components can get or set notes data.
+8. **NotesContext**: Consolidated place where notes data is present. This data is also hooked to React state and thus re-renders all the UI components users whenever notes data changes. This magic allows auto-populating of new note in the notes list when added from `CreateNote` component.
+9. **NotesManager**: NotesManager component is responsible to show `CreateNote` component to create new note, `NotesList` to show list of notes, `NotesDetail` to show a specific note which can then be edited.
+
+# Project setup
+## Github repo clone
+```
+git clone https://github.com/salonikumawat28/notes_management_app.git
+cd notes_management_app
+```
+## Start FrontEnd Server
+```
+npm install
+npm start
+```
+Server can be accessed at `http://localhost:3000`
+## Start BackEnd Server
+```
+npm install
+npm start
+```
+Server can be accessed at `http://localhost:9000`
+
+**Note**: Backend server currenty connects to database which needs whitelisting of specific URL. So either change the dartabase URL to your instance in `server/configs/config.js` OR ask @salonikumawat28 to whitelist your IP address.
+# App Usage
+We can communicate with the App by accessing FrontEnd via browser or Backend via CURL commands.
+## BackEnd Server
+Here are the API endpoints which are supported:
+<table>
+<tr>
+<td><b/>API</td><td><b/>Curl command </td> <td> <b/>Sample Success response </td> <td> <b/>Sample failure response </td>
+</tr>
+<tr>
+<td>
+1. Signup:
+</td>
+<td>
+
+```
+curl -X POST http://localhost:9000/api/auth/signup -H 'Content-Type: application/json' -d '{"name": "First Last", "email": "test4@test.com", "password": "Test@1234"}'
+```
+
+</td>
+<td>
+    
+```json
+{
+  "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTM2ODYyZGVmMmVhY2VmM2FjOWExYjIiLCJpYXQiOjE2OTgwNzIxMDl9.FstnAA-lm2LYWnHcPfHyfEamFuVKXLPq6T7kc7dtIoY"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "ValidationError",
+    "message": "Validation failed",
+    "fieldErrors": [
+      {
+        "field": "name",
+        "message": "Name must contain only letters and spaces"
+      },
+      {
+        "field": "password",
+        "message": "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character"
+      }
+    ],
+    "globalErrors": []
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+2. Login
+</td>
+<td>
+
+```
+curl -X POST http://localhost:9000/api/auth/login -H 'Content-Type: application/json' -d '{"email": "test4@test.com", "password": "Test@1234"}'
+```
+
+</td>
+<td>
+    
+```json
+{
+  "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTM2ODYyZGVmMmVhY2VmM2FjOWExYjIiLCJpYXQiOjE2OTgwNzIxMDl9.FstnAA-lm2LYWnHcPfHyfEamFuVKXLPq6T7kc7dtIoY"
+}
+```
+
+</td>
+<td>
+
+Example 1:
+
+```json
+{
+  "error": {
+    "name": "UnauthorizedError",
+    "message": "Invalid credentials."
+  }
+}
+```
+
+Example 2:
+
+```json
+{
+  "error": {
+    "name": "ValidationError",
+    "message": "Validation failed",
+    "fieldErrors": [
+      {
+        "field": "email",
+        "message": "Email must be a valid email address"
+      }
+    ],
+    "globalErrors": []
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+3. Get a User
+</td>
+<td>
+
+```
+curl -X GET http://localhost:9000/api/users/me -H "Authorization: Bearer $TOKEN"
+```
+
+</td>
+<td>
+    
+```json
+{
+  "_id": "6536862def2eacef3ac9a1b2",
+  "name": "First Last",
+  "email": "test4@test.com"
+} 
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "NotFoundError",
+    "message": "User not found."
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+4. Update partial information of user
+</td>
+<td>
+
+```
+curl -X PATCH http://localhost:9000/api/users/me -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"bla": "updatedFirst Last"}'
+```
+
+</td>
+<td>
+    
+```json
+{
+  "_id": "6536862def2eacef3ac9a1b2",
+  "name": "updatedFirst Last",
+  "email": "test4@test.com"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "ValidationError",
+    "message": "Validation failed",
+    "fieldErrors": [
+      {
+        "field": "name",
+        "message": "Name must contain only letters and spaces"
+      }
+    ],
+    "globalErrors": []
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+5. Update password of user
+</td>
+<td>
+
+```
+curl -X PATCH http://localhost:9000/api/users/me/password -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"password": "Test@1235"}'
+```
+
+</td>
+<td>
+    
+```json
+{
+  "message": "Password updated successfully"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "ValidationError",
+    "message": "Validation failed",
+    "fieldErrors": [
+      {
+        "field": "password",
+        "message": "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character"
+      }
+    ],
+    "globalErrors": []
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+6. Delete a user
+</td>
+<td>
+
+```
+curl -X DELETE http://localhost:9000/api/users/me -H "Authorization: Bearer $TOKEN"
+```
+
+</td>
+<td>
+    
+```json
+{
+  "message": "User and associated notes deleted successfully"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "UnauthorizedError",
+    "message": "No token provided"
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+7. Create a new note
+</td>
+<td>
+
+```
+curl -X POST http://localhost:9000/api/notes -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Test 2 Title 2", "content": "Test 2 content 2"}'
+```
+
+</td>
+<td>
+    
+```json
+{
+  "_id": "6536913d50415d6fc5e6b488",
+  "title": "Test 2 Title 1",
+  "content": "Test 2 content 1",
+  "_createdAt": "2023-10-23T15:29:01.318Z",
+  "_updatedAt": "2023-10-23T15:29:01.318Z"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "ValidationError",
+    "message": "Validation failed",
+    "fieldErrors": [],
+    "globalErrors": ["\"value\" must contain at least one of [title, content]"]
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+8. Update partial information of a note
+</td>
+<td>
+
+```
+curl -X PATCH http://localhost:9000/api/notes/$NOTE_ID -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Updated Test 2 Title 1"}'
+```
+
+</td>
+<td>
+    
+```json
+{
+  "_id": "6536913d50415d6fc5e6b488",
+  "title": "Updated Test 2 Title 1",
+  "content": "Test 2 content 1",
+  "_updatedAt": "2023-10-23T15:33:13.513Z",
+  "_createdAt": "2023-10-23T15:29:01.318Z"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "ValidationError",
+    "message": "Validation failed",
+    "fieldErrors": [],
+    "globalErrors": ["\"value\" must contain at least one of [title, content]"]
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+9. Get a particular note
+</td>
+<td>
+
+```
+curl -X GET http://localhost:9000/api/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
+```
+
+</td>
+<td>
+    
+```json
+{
+  "_id": "6536913d50415d6fc5e6b488",
+  "title": "Updated Test 2 Title 1",
+  "content": "Test 2 content 1",
+  "_updatedAt": "2023-10-23T15:33:13.513Z",
+  "_createdAt": "2023-10-23T15:29:01.318Z"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "NotFoundError",
+    "message": "Note not found."
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+10. Get all note
+</td>
+<td>
+
+```
+curl -X GET http://localhost:9000/api/notes -H "Authorization: Bearer $TOKEN"
+```
+
+</td>
+<td>
+    
+```json
+[
+  {
+    "_id": "6536913d50415d6fc5e6b488",
+    "title": "Updated Test 2 Title 1",
+    "content": "Test 2 content 1",
+    "_updatedAt": "2023-10-23T15:33:13.513Z",
+    "_createdAt": "2023-10-23T15:29:01.318Z"
+  },
+  {
+    "_id": "6536918950415d6fc5e6b48a",
+    "title": "Test 2 Title 2",
+    "_updatedAt": "2023-10-23T15:30:17.412Z",
+    "_createdAt": "2023-10-23T15:30:17.412Z"
+  },
+  {
+    "_id": "653691f850415d6fc5e6b48c",
+    "title": "Test 2 Title 2",
+    "content": "Test 2 content 2",
+    "_updatedAt": "2023-10-23T15:32:08.517Z",
+    "_createdAt": "2023-10-23T15:32:08.517Z"
+  }
+]
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "UnauthorizedError",
+    "message": "No token provided"
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+11. Delete a note
+</td>
+<td>
+
+```
+curl -X DELETE http://localhost:9000/api/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
+```
+
+</td>
+<td>
+    
+```json
+{
+  "message": "Note deleted successfully"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "CastError",
+    "message": "Cast to ObjectId failed for value \"1126$\" (type string) at path \"_id\" for model \"Notes\""
+  }
+}
+```
+
+</td>
+</tr>
+</table>
+# Rough
 # Creating quickstart projects
 
 ## Client
@@ -910,7 +1434,6 @@ H --\> J
 
 # Frontent Flow Diagram
 
-![mermaid-diagram-2023-10-23-203732](https://github.com/salonikumawat28/notes_management_app/assets/72411385/16bdbf5c-7f17-40e2-82dd-9a087cad0b59)
 
 <!--
 flowchart TB
@@ -993,469 +1516,6 @@ sequenceDiagram
     R ->> Chrome: access token
 ```
 -->
-
-
-<table>
-<tr>
-<td><b/>API</td><td><b/>Curl command </td> <td> <b/>Sample Success response </td> <td> <b/>Sample failure response </td>
-</tr>
-<tr>
-<td>
-1. Signup:
-</td>
-<td>
-
-```
-curl -X POST http://localhost:9000/api/auth/signup -H 'Content-Type: application/json' -d '{"name": "First Last", "email": "test4@test.com", "password": "Test@1234"}'
-```
-
-</td>
-<td>
-    
-```json
-{
-  "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTM2ODYyZGVmMmVhY2VmM2FjOWExYjIiLCJpYXQiOjE2OTgwNzIxMDl9.FstnAA-lm2LYWnHcPfHyfEamFuVKXLPq6T7kc7dtIoY"
-}
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "ValidationError",
-    "message": "Validation failed",
-    "fieldErrors": [
-      {
-        "field": "name",
-        "message": "Name must contain only letters and spaces"
-      },
-      {
-        "field": "password",
-        "message": "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character"
-      }
-    ],
-    "globalErrors": []
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-2. Login
-</td>
-<td>
-
-```
-curl -X POST http://localhost:9000/api/auth/login -H 'Content-Type: application/json' -d '{"email": "test4@test.com", "password": "Test@1234"}'
-```
-
-</td>
-<td>
-    
-```json
-{
-  "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTM2ODYyZGVmMmVhY2VmM2FjOWExYjIiLCJpYXQiOjE2OTgwNzIxMDl9.FstnAA-lm2LYWnHcPfHyfEamFuVKXLPq6T7kc7dtIoY"
-}
-```
-
-</td>
-<td>
-
-Example 1:
-
-```json
-{
-  "error": {
-    "name": "UnauthorizedError",
-    "message": "Invalid credentials."
-  }
-}
-```
-
-Example 2:
-
-```json
-{
-  "error": {
-    "name": "ValidationError",
-    "message": "Validation failed",
-    "fieldErrors": [
-      {
-        "field": "email",
-        "message": "Email must be a valid email address"
-      }
-    ],
-    "globalErrors": []
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-3. Get a User
-</td>
-<td>
-
-```
-curl -X GET http://localhost:9000/api/users/me -H "Authorization: Bearer $TOKEN"
-```
-
-</td>
-<td>
-    
-```json
-{
-  "_id": "6536862def2eacef3ac9a1b2",
-  "name": "First Last",
-  "email": "test4@test.com"
-} 
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "NotFoundError",
-    "message": "User not found."
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-4. Update partial information of user
-</td>
-<td>
-
-```
-curl -X PATCH http://localhost:9000/api/users/me -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"bla": "updatedFirst Last"}'
-```
-
-</td>
-<td>
-    
-```json
-{
-  "_id": "6536862def2eacef3ac9a1b2",
-  "name": "updatedFirst Last",
-  "email": "test4@test.com"
-}
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "ValidationError",
-    "message": "Validation failed",
-    "fieldErrors": [
-      {
-        "field": "name",
-        "message": "Name must contain only letters and spaces"
-      }
-    ],
-    "globalErrors": []
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-5. Update password of user
-</td>
-<td>
-
-```
-curl -X PATCH http://localhost:9000/api/users/me/password -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"password": "Test@1235"}'
-```
-
-</td>
-<td>
-    
-```json
-{
-  "message": "Password updated successfully"
-}
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "ValidationError",
-    "message": "Validation failed",
-    "fieldErrors": [
-      {
-        "field": "password",
-        "message": "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character"
-      }
-    ],
-    "globalErrors": []
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-6. Delete a user
-</td>
-<td>
-
-```
-curl -X DELETE http://localhost:9000/api/users/me -H "Authorization: Bearer $TOKEN"
-```
-
-</td>
-<td>
-    
-```json
-{
-  "message": "User and associated notes deleted successfully"
-}
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "UnauthorizedError",
-    "message": "No token provided"
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-7. Create a new note
-</td>
-<td>
-
-```
-curl -X POST http://localhost:9000/api/notes -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Test 2 Title 2", "content": "Test 2 content 2"}'
-```
-
-</td>
-<td>
-    
-```json
-{
-  "_id": "6536913d50415d6fc5e6b488",
-  "title": "Test 2 Title 1",
-  "content": "Test 2 content 1",
-  "_createdAt": "2023-10-23T15:29:01.318Z",
-  "_updatedAt": "2023-10-23T15:29:01.318Z"
-}
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "ValidationError",
-    "message": "Validation failed",
-    "fieldErrors": [],
-    "globalErrors": ["\"value\" must contain at least one of [title, content]"]
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-8. Update partial information of a note
-</td>
-<td>
-
-```
-curl -X PATCH http://localhost:9000/api/notes/$NOTE_ID -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Updated Test 2 Title 1"}'
-```
-
-</td>
-<td>
-    
-```json
-{
-  "_id": "6536913d50415d6fc5e6b488",
-  "title": "Updated Test 2 Title 1",
-  "content": "Test 2 content 1",
-  "_updatedAt": "2023-10-23T15:33:13.513Z",
-  "_createdAt": "2023-10-23T15:29:01.318Z"
-}
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "ValidationError",
-    "message": "Validation failed",
-    "fieldErrors": [],
-    "globalErrors": ["\"value\" must contain at least one of [title, content]"]
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-9. Get a particular note
-</td>
-<td>
-
-```
-curl -X GET http://localhost:9000/api/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
-```
-
-</td>
-<td>
-    
-```json
-{
-  "_id": "6536913d50415d6fc5e6b488",
-  "title": "Updated Test 2 Title 1",
-  "content": "Test 2 content 1",
-  "_updatedAt": "2023-10-23T15:33:13.513Z",
-  "_createdAt": "2023-10-23T15:29:01.318Z"
-}
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "NotFoundError",
-    "message": "Note not found."
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-10. Get all note
-</td>
-<td>
-
-```
-curl -X GET http://localhost:9000/api/notes -H "Authorization: Bearer $TOKEN"
-```
-
-</td>
-<td>
-    
-```json
-[
-  {
-    "_id": "6536913d50415d6fc5e6b488",
-    "title": "Updated Test 2 Title 1",
-    "content": "Test 2 content 1",
-    "_updatedAt": "2023-10-23T15:33:13.513Z",
-    "_createdAt": "2023-10-23T15:29:01.318Z"
-  },
-  {
-    "_id": "6536918950415d6fc5e6b48a",
-    "title": "Test 2 Title 2",
-    "_updatedAt": "2023-10-23T15:30:17.412Z",
-    "_createdAt": "2023-10-23T15:30:17.412Z"
-  },
-  {
-    "_id": "653691f850415d6fc5e6b48c",
-    "title": "Test 2 Title 2",
-    "content": "Test 2 content 2",
-    "_updatedAt": "2023-10-23T15:32:08.517Z",
-    "_createdAt": "2023-10-23T15:32:08.517Z"
-  }
-]
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "UnauthorizedError",
-    "message": "No token provided"
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-11. Delete a note
-</td>
-<td>
-
-```
-curl -X DELETE http://localhost:9000/api/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
-```
-
-</td>
-<td>
-    
-```json
-{
-  "message": "Note deleted successfully"
-}
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "CastError",
-    "message": "Cast to ObjectId failed for value \"1126$\" (type string) at path \"_id\" for model \"Notes\""
-  }
-}
-```
-
-</td>
-</tr>
 
 # Folder structure
 ```
