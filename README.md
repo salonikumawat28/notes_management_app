@@ -356,6 +356,9 @@ Service --> |15. returns data| Controller
 Controller --> |16. send response with data| ExpressApp
 ```
 
+# Server side - Creating access token
+Mermaid [link](https://www.mermaidchart.com/app/projects/1c640cf4-1f17-42bd-b19c-eec224895dbc/diagrams/a3995b87-20b5-40bf-8c91-42853d6e8f81/version/v0.1/edit)
+
 ```
 flowchart LR
     subgraph client
