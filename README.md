@@ -878,12 +878,53 @@ H --\> J
 
 # Mongo Db Database Schema
 
-Mermaid [link](https://www.mermaidchart.com/app/projects/1c640cf4-1f17-42bd-b19c-eec224895dbc/diagrams/7f25180f-67e8-402c-97b3-3d2239b972bf/version/v0.1/edit)
 ![mermaid-diagram-2023-10-23-172740](https://github.com/salonikumawat28/notes_management_app/assets/72411385/f790b27e-d993-4f60-a1bb-38027e7841e6)
 
 # Frontent Flow Diagram
-Mermaid [Link](https://www.mermaidchart.com/app/projects/1c640cf4-1f17-42bd-b19c-eec224895dbc/diagrams/7f25180f-67e8-402c-97b3-3d2239b972bf/version/v0.1/edit)
+
 ![mermaid-diagram-2023-10-23-203732](https://github.com/salonikumawat28/notes_management_app/assets/72411385/16bdbf5c-7f17-40e2-82dd-9a087cad0b59)
+
+<!--
+flowchart TB
+Index[index.js]
+App[App Component]
+Context[<b>Auth Context</b> <br/> Contains getter and setter for authenticate user ]
+NotesManagement[Notes Management App Component]
+Router[ Browser Router]
+Decision{url & isLoggedIn </br> will decide <br/> the route}
+PublicL[Public Homepage <br/> + <br/> Login]
+PublicS[Public Homepage <br/> + <br/> Signup]
+Auth[Auth Homepage]
+Login[Login]
+Signup[Signup]
+AuthHeader[Auth Header]
+Logout[Logout]
+NoteManager[Notes Manager]
+NContect[<b>Note Context</b><br/> Contains getter and setter for authenticate note ]
+NList[Note List]
+NCreate[Create Note]
+NUpdate[Editable popover to update note]
+
+Index --\> App
+App --\> NotesManagement
+App --\> Context
+NotesManagement --\> Router
+Router --\> Decision
+Decision --\> PublicL --\> Login
+Decision --\> PublicS --\> Signup
+Decision --\> Auth 
+Auth ---\> NoteManager
+Auth ---\> AuthHeader
+AuthHeader --\> Logout
+NoteManager --\> NContect
+NoteManager --\> NList
+NoteManager --\> NCreate
+NoteManager --\> NUpdate
+
+style Context fill:#ffffcc
+style NContect fill:#ffffcc
+  
+-->
 
 
 <table>
