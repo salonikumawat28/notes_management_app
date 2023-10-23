@@ -1,12 +1,15 @@
-const { UnauthorizedError } = require("../errors");
+const { InternalServerError } = require("../errors/errors");
 const usersService = require("../services/usersService");
-const _ = require("underscore");
 
 /* Get a specific user by ID. */
 async function getUser(req, res, next) {
-  // Sanity check if user authorized.
-  if (!req.authenticatedUserId) {
-    return next(new UnauthorizedError("No token provided"));
+  // Sanity check if request went through all middlewares.
+  if (!req.authenticatedUserId || !req.validated) {
+    return next(
+      new InternalServerError(
+        "Unexpected state - Request is expected to be validated before coming in controller."
+      )
+    );
   }
 
   // Get user by id.
@@ -21,18 +24,17 @@ async function getUser(req, res, next) {
 /* Update the user with new user data.
  */
 async function updateUser(req, res, next) {
-  // Sanity check if user authorized.
-  if (!req.authenticatedUserId) {
-    return next(new UnauthorizedError("No token provided"));
-  }
-
-  // Validate request inputs.
-  let userDataToUpdate = req.body;
-  if (userDataToUpdate._id && userDataToUpdate._id !== req.authenticatedUserId) {
-    return next(new ValidationError("User id doesn't match with URL user id."));
+  // Sanity check if request went through all middlewares.
+  if (!req.authenticatedUserId || !req.validated) {
+    return next(
+      new InternalServerError(
+        "Unexpected state - Request is expected to be validated before coming in controller."
+      )
+    );
   }
 
   // Update the user.
+  let userDataToUpdate = req.body;
   usersService
     .updateUser(userDataToUpdate, req.authenticatedUserId)
     .then((updatedUser) => res.json(updatedUser))
@@ -40,18 +42,17 @@ async function updateUser(req, res, next) {
 }
 
 async function updatePassword(req, res, next) {
-  // Sanity check if user authorized.
-  if (!req.authenticatedUserId) {
-    return next(new UnauthorizedError("No token provided"));
+  // Sanity check if request went through all middlewares.
+  if (!req.authenticatedUserId || !req.validated) {
+    return next(
+      new InternalServerError(
+        "Unexpected state - Request is expected to be validated before coming in controller."
+      )
+    );
   }
 
-  // Validate request inputs.
-  let {password} = req.body;
-  if (!password) {
-    return next(new ValidationError("No password given to update."));
-  }
-
-  // Update the user.
+  // Update the user password.
+  let { password } = req.body;
   usersService
     .updatePassword(password, req.authenticatedUserId)
     .then((response) => res.json(response))
@@ -60,9 +61,13 @@ async function updatePassword(req, res, next) {
 
 /* Deletes a user by ID. */
 async function deleteUser(req, res, next) {
-  // Sanity check if user authorized.
-  if (!req.authenticatedUserId) {
-    return next(new UnauthorizedError("No token provided"));
+  // Sanity check if request went through all middlewares.
+  if (!req.authenticatedUserId || !req.validated) {
+    return next(
+      new InternalServerError(
+        "Unexpected state - Request is expected to be validated before coming in controller."
+      )
+    );
   }
 
   // Delete note.

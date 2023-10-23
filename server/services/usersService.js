@@ -1,7 +1,7 @@
-const { InternalServerError, NotFoundError } = require("../errors");
+const { InternalServerError, NotFoundError } = require("../errors/errors");
 const notesModel = require("../models/notesModel");
 const usersModel = require("../models/usersModel");
-const utils = require("../utils");
+const bcrypt = require("bcrypt");
 
 async function getUser(userId) {
   const user = await usersModel.findById(userId).select('_id name email');
@@ -12,10 +12,9 @@ async function getUser(userId) {
 }
 
 async function updateUser(userDataToUpdate, userId) {
-  const filteredUserDataToUpdate = utils.filterObjectFields(userDataToUpdate, ['name', 'email']);
   return await usersModel.findOneAndUpdate(
     { _id: userId },
-    { $set: filteredUserDataToUpdate },
+    { $set: userDataToUpdate },
     { new: true }
   ).select('_id name email');
 }
@@ -26,7 +25,9 @@ async function updatePassword(passwordToUpdate, userId) {
     { _id: userId },
     { $set: {password: encryptedPassword} },
   );
-  console.log("updage user result: ", updateUserResult);
+  if (!updateUserResult.modifiedCount) {
+    throw new InternalServerError("Unable to update user's password.");
+  }
   return { message: "Password updated successfully" };
 }
 

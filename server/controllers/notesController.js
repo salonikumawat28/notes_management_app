@@ -1,26 +1,42 @@
-const { NotFoundError, ValidationError } = require("../errors");
+const { InternalServerError } = require("../errors/errors");
 const notesService = require("../services/notesService");
 
 /* Get notes listing. */
 async function getNotes(req, res, next) {
-  // Sanity check if user authorized.
-  if (!req.authenticatedUserId) {
-    return next(new UnauthorizedError("No token provided"));
+  // Sanity check if request went through all middlewares.
+  if (!req.authenticatedUserId || !req.validated) {
+    return next(
+      new InternalServerError(
+        "Unexpected state - Request is expected to be validated before coming in controller."
+      )
+    );
   }
 
-  // Get notes for the user.
   const authorId = req.authenticatedUserId;
-  notesService
+  if (req.query && req.query.search) {
+    // Search notes by search query for the current user.
+    notesService
+      .searchNotes(req.query.search, authorId)
+      .then((notes) => res.send(notes))
+      .catch((error) => next(error));
+  } else {
+    // Get all notes of the current user.
+    notesService
     .getNotes(authorId)
     .then((notes) => res.send(notes))
     .catch((error) => next(error));
+  }
 }
 
 /* Get a specific note by ID. */
 async function getNote(req, res, next) {
-  // Sanity check if user authorized.
-  if (!req.authenticatedUserId) {
-    return next(new UnauthorizedError(" No token provided"));
+  // Sanity check if request went through all middlewares.
+  if (!req.authenticatedUserId || !req.validated) {
+    return next(
+      new InternalServerError(
+        "Unexpected state - Request is expected to be validated before coming in controller."
+      )
+    );
   }
 
   // Get note by id.
@@ -34,18 +50,17 @@ async function getNote(req, res, next) {
 
 /* Create a new note. */
 async function createNote(req, res, next) {
-  // Sanity check if user authorized.
-  if (!req.authenticatedUserId) {
-    return next(new UnauthorizedError("No token provided"));
-  }
-
-  // Validate request inputs.
-  let noteToCreate = req.body;
-  if (!noteToCreate.content && !noteToCreate.title) {
-    return next(new ValidationError("Either title or content is required"));
+  // Sanity check if request went through all middlewares.
+  if (!req.authenticatedUserId || !req.validated) {
+    return next(
+      new InternalServerError(
+        "Unexpected state - Request is expected to be validated before coming in controller."
+      )
+    );
   }
 
   // Create note.
+  const noteToCreate = req.body;
   const authorId = req.authenticatedUserId;
   notesService
     .createNote(noteToCreate, authorId)
@@ -56,18 +71,17 @@ async function createNote(req, res, next) {
 /* Update the note with new note data.
  */
 async function updateNote(req, res, next) {
-  // Sanity check if user authorized.
-  if (!req.authenticatedUserId) {
-    return next(new UnauthorizedError("No token provided"));
+  // Sanity check if request went through all middlewares.
+  if (!req.authenticatedUserId || !req.validated) {
+    return next(
+      new InternalServerError(
+        "Unexpected state - Request is expected to be validated before coming in controller."
+      )
+    );
   }
 
-  // Validate request inputs.
-  let noteDataToUpdate = req.body;
-  if (noteDataToUpdate._id && noteDataToUpdate._id !== req.params.id) {
-    return next(new ValidationError("Note id doesn't match with URL note id."));
-  }
-  
   // Update the note.
+  const noteDataToUpdate = req.body;
   const authorId = req.authenticatedUserId;
   const noteId = req.params.id;
   notesService
@@ -78,9 +92,13 @@ async function updateNote(req, res, next) {
 
 /* Deletes a note by ID. */
 async function deleteNote(req, res, next) {
-  // Sanity check if user authorized.
-  if (!req.authenticatedUserId) {
-    return next(new UnauthorizedError("No token provided"));
+  // Sanity check if request went through all middlewares.
+  if (!req.authenticatedUserId || !req.validated) {
+    return next(
+      new InternalServerError(
+        "Unexpected state - Request is expected to be validated before coming in controller."
+      )
+    );
   }
 
   // Delete note.

@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
-// const AutoIncrementFactory = require("mongoose-sequence");
-// const AutoIncrement = AutoIncrementFactory(mongoose);
-const _ = require('underscore');
-const config = require("../config");
 
-// Note: Setting _id to false so that mongoose doesn't auto create the _id.
+// TODO: constraints are not matching with out validator. Correct it.
 const usersSchema = new mongoose.Schema(
   {
     name: {
@@ -37,8 +33,8 @@ const usersSchema = new mongoose.Schema(
     _updatedAt: Date,
   }
 );
-usersSchema.set('maxTimeMS', config.dbTimeoutInMs);
 
+// Auto record created and updated timestamps
 usersSchema.pre('save', function(next) {
   const currentDate = new Date();
 
@@ -52,31 +48,6 @@ usersSchema.pre('save', function(next) {
 
   next();
 });
-// ,{ _id: false }
-
-// Auto increment.
-// Note: Setting mongoose-sequence to auto increment the _id.
-// userSchema.plugin(AutoIncrement, { id: "user_id_counter", inc_field: "_id" });
-
-// Index in ascending order.
-// userSchema.index({ _id: 1 });
-
-// Custom methods for User model
-// TODO: User password encryption
-// userSchema.statics.login = async function ({email, password}) {
-//   console.log("userModel.login started");
-//   const user = await this.findOne({email: email});
-//   console.log("userModel.login found user: ", user);
-//   if(_.isEmpty(user)) return null;
-//   console.log("user is not null ");
-//   if(user.password === password) {
-//     console.log("user password matched ");
-//     return user;
-//   }
-//   console.log("user password didnt match ");
-//   return null;
-// };
 
 const usersModel = mongoose.model("User", usersSchema);
-
 module.exports = usersModel;

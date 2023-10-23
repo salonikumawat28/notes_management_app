@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { databaseUrl } = require("../config");
+const { databaseUrl } = require("../configs/config");
 
 // Function to disconnect from MongoDB
 const disconnectDb = async () => {

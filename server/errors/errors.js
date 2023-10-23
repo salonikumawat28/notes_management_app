@@ -1,12 +1,14 @@
 class ValidationError extends Error {
-  constructor(message) {
+  constructor(message, fieldErrors = [], globalErrors = []) {
     super(message);
     this.name = "ValidationError";
     this.statusCode = 400;
+    this.fieldErrors = fieldErrors;
+    this.globalErrors = globalErrors;
   }
-}class UnauthorizedError extends Error {
+}
 
-
+class UnauthorizedError extends Error {
   constructor(message) {
     super(message);
     this.name = "UnauthorizedError";
@@ -38,14 +40,6 @@ class ConflictError extends Error {
   }
 }
 
-class ValidationError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = "ValidationError";
-    this.statusCode = 422;
-  }
-}
-
 class InternalServerError extends Error {
   constructor(message) {
     super(message);
@@ -60,6 +54,5 @@ module.exports = {
   ForbiddenError,
   NotFoundError,
   ConflictError,
-  ValidationError,
   InternalServerError,
 };

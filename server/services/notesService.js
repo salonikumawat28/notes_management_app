@@ -1,6 +1,16 @@
-const { NotFoundError } = require("../errors");
+const { NotFoundError } = require("../errors/errors");
 const notesModel = require("../models/notesModel");
-const utils = require("../utils");
+
+async function searchNotes(searchQuery, authorId) {
+  return await notesModel
+    .find(
+      { $text: { $search: searchQuery }, author: authorId },
+      { score: { $meta: "textScore" } }
+    )
+    .sort({ score: { $meta: "textScore" } })
+    .select("_id title content _createdAt _updatedAt")
+    .select({ score: 0 });
+}
 
 async function getNotes(authorId) {
   return await notesModel
@@ -20,9 +30,8 @@ async function getNote(noteId, authorId) {
 }
 
 async function createNote(noteToCreate, authorId) {
-  const filteredNoteToCreate = utils.filterObjectFields(noteToCreate, ['title', 'content']);
   const createdNote = await notesModel.create({
-    ...filteredNoteToCreate,
+    ...noteToCreate,
     author: authorId,
   });
   const { _id, title, content, _createdAt, _updatedAt } = createdNote;
@@ -30,11 +39,10 @@ async function createNote(noteToCreate, authorId) {
 }
 
 async function updateNote(noteDataToUpdate, noteId, authorId) {
-  const filteredNoteDataToUpdate = utils.filterObjectFields(noteDataToUpdate, ['title', 'content', '_createdAt', '_updatedAt']);
   return await notesModel
     .findOneAndUpdate(
       { _id: noteId, author: authorId },
-      { $set: filteredNoteDataToUpdate },
+      { $set: noteDataToUpdate },
       { new: true }
     )
     .select("_id title content _createdAt _updatedAt");
@@ -50,6 +58,7 @@ async function deleteNote(noteId, authorId) {
 }
 
 const notesService = {
+  searchNotes,
   getNotes,
   getNote,
   createNote,

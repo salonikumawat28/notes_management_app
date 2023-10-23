@@ -1,38 +1,42 @@
-const { ValidationError } = require("../errors");
+const { InternalServerError } = require("../errors/errors");
 const authService = require("../services/authService");
 
-// TODO: Add all request validations in login and signup.
-// TODO: disconnect database by turning off internet and verify that authService signup and login handles the 500 errors as well.
-async function signup(req, res, next) {
-  // Validate request
-  const { name, email, password } = req.body;
-  if (!name || !email || !password) {
-    return next(new ValidationError("Name, Email and password are required."));
+async function signUp(req, res, next) {
+  // Sanity check if request went through all middlewares.
+  if (!req.validated) {
+    return next(
+      new InternalServerError(
+        "Unexpected state - Request is expected to be validated before coming in controller."
+      )
+    );
   }
 
   // Signup the user.
   authService
-    .signup({ name, email, password })
+    .signUp(req.body)
     .then((authToken) => res.status(201).json({ authToken }))
     .catch((error) => next(error));
 }
 
 async function login(req, res, next) {
-  // Validate request
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return next(new ValidationError("Email and password are required."));
+  // Sanity check if request went through all middlewares.
+  if (!req.validated) {
+    return next(
+      new InternalServerError(
+        "Unexpected state - Request is expected to be validated before coming in controller."
+      )
+    );
   }
 
   // Login the user.
   authService
-    .login({ email, password })
+    .login(req.body)
     .then((authToken) => res.status(200).json({ authToken }))
     .catch((error) => next(error));
 }
 
 const authController = {
-  signup,
+  signUp,
   login,
 };
 

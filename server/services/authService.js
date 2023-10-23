@@ -1,10 +1,10 @@
-const config = require("../config");
+const config = require("../configs/config");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { UnauthorizedError, ConflictError } = require("../errors");
+const { UnauthorizedError, ConflictError } = require("../errors/errors");
 const usersModel = require("../models/usersModel");
 
-async function signup({ name, email, password }) {
+async function signUp({ name, email, password }) {
   // Data validation (which involves database)
   const userExists = await usersModel.exists({ email });
   if (userExists) {
@@ -52,6 +52,6 @@ async function login({ email, password }) {
 
 const authService = {
   login,
-  signup,
+  signUp,
 };
 module.exports = authService;

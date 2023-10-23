@@ -1,10 +1,5 @@
 const mongoose = require("mongoose");
-const config = require("../config");
-// const AutoIncrementFactory = require("mongoose-sequence");
 
-// const AutoIncrement = AutoIncrementFactory(mongoose);
-
-// Note: Setting _id to false so that mongoose doesn't auto create the _id.
 const notesSchema = new mongoose.Schema(
   {
     title: String,
@@ -19,10 +14,12 @@ const notesSchema = new mongoose.Schema(
     _updatedAt: Date,
   }
 );
-notesSchema.set('maxTimeMS', config.dbTimeoutInMs);
 
+// Create a text index on title and content fields
+notesSchema.index({ title: 'text', content: 'text' });
+
+// Auto record created and updated timestamps
 notesSchema.pre('save', function(next) {
-  console.log("***** baba");
   const currentDate = new Date();
 
   // Update the _updatedAt field
@@ -41,14 +38,5 @@ notesSchema.pre('findOneAndUpdate', function(next) {
   next();
 });
 
-// { _id: false }
-
-// Note: Setting mongoose-sequence to auto increment the _id.
-// notesSchema.plugin(AutoIncrement, { id: "note_id_counter", inc_field: "_id" });
-
-// Index in ascending order.
-// notesSchema.index({ _id: 1 });
-
 const notesModel = mongoose.model("Notes", notesSchema);
-
 module.exports = notesModel;

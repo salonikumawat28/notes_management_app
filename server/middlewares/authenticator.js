@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
-const config = require('../config');
-const { UnauthorizedError } = require('../errors');
+const config = require('../configs/config');
+const { UnauthorizedError } = require('../errors/errors');
 
-const authenticateJWT = (req, res, next) => {
+const authenticator = (req, res, next) => {
     // Check if request has authorization header.
   const authorizationHeader = req.headers.authorization;
   if (!authorizationHeader) {
@@ -29,4 +29,4 @@ const authenticateJWT = (req, res, next) => {
   }
 };
 
-module.exports = authenticateJWT;
+module.exports = authenticator;
