@@ -20,7 +20,6 @@ Express.js is utilized for the Backend of the notes application. The application
 npx express-generator server
 npm install
 ```
-
 # Architecture
 
 ## Server API
@@ -1431,20 +1430,28 @@ curl -X DELETE http://localhost:9000/api/notes/$NOTE_ID -H "Authorization: Beare
 
 # Folder structure
 ```
-project-root
-|-- controllers
-|   |-- authController.js
-|-- services
-|   |-- authService.js
-|-- errors
-|   |-- errors.js
-|-- tests
+Notes Mangement App
+|-- client
+|   |-- public
+|   |-- src
+|   |   |-- components
+|   |   |-- contexts
+|   |   |-- css
+|   |   |-- pages
+|   |   |-- utils
+|   |-- package-lock.json
+|   |-- package.json
+|-- server
+|   |-- configs
 |   |-- controllers
-|   |   |-- authController.test.js
-|   |-- services
-|   |   |-- authService.test.js
+|   |-- db
 |   |-- errors
-|   |   |-- errors.test.js
+|   |-- middlewares
+|   |-- models
+|   |-- routes
+|   |-- services
+|   |-- tests
+|   |-- utils
 |-- other project files and folders
 ```
 
