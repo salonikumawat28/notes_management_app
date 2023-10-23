@@ -777,6 +777,11 @@ Mermaid [link](https://www.mermaidchart.com/app/projects/1c640cf4-1f17-42bd-b19c
 Mermaid [link](https://www.mermaidchart.com/app/projects/1c640cf4-1f17-42bd-b19c-eec224895dbc/diagrams/7f25180f-67e8-402c-97b3-3d2239b972bf/version/v0.1/edit)
 ![mermaid-diagram-2023-10-23-172740](https://github.com/salonikumawat28/notes_management_app/assets/72411385/f790b27e-d993-4f60-a1bb-38027e7841e6)
 
+# Frontent Flow Diagram
+Mermaid [Link](https://www.mermaidchart.com/app/projects/1c640cf4-1f17-42bd-b19c-eec224895dbc/diagrams/7f25180f-67e8-402c-97b3-3d2239b972bf/version/v0.1/edit)
+![mermaid-diagram-2023-10-23-203732](https://github.com/salonikumawat28/notes_management_app/assets/72411385/16bdbf5c-7f17-40e2-82dd-9a087cad0b59)
+
+
 <table>
 <tr>
 <td><b/>API</td><td><b/>Curl command </td> <td> <b/>Sample Success response </td> <td> <b/>Sample failure response </td>
