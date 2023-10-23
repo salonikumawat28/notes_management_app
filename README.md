@@ -1429,6 +1429,26 @@ curl -X DELETE http://localhost:9000/api/notes/$NOTE_ID -H "Authorization: Beare
 </td>
 </tr>
 
+# Folder structure
+```
+project-root
+|-- controllers
+|   |-- authController.js
+|-- services
+|   |-- authService.js
+|-- errors
+|   |-- errors.js
+|-- tests
+|   |-- controllers
+|   |   |-- authController.test.js
+|   |-- services
+|   |   |-- authService.test.js
+|   |-- errors
+|   |   |-- errors.test.js
+|-- other project files and folders
+```
+
+
 
 
 # Rough
