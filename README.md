@@ -853,8 +853,28 @@ Decode --\> SetUserId
 
 # Server Side - login flow
 
-Mermaid [link](https://www.mermaidchart.com/app/projects/1c640cf4-1f17-42bd-b19c-eec224895dbc/diagrams/e8c5026b-b1eb-4f8e-b635-4b4eca8eddca/version/v0.1/edit)
 ![mermaid-diagram-2023-10-23-150733](https://github.com/salonikumawat28/notes_management_app/assets/72411385/cc08d1f3-4221-4642-8050-8f81a6127525)
+
+<!--
+flowchart TB
+subgraph Controller
+    Co(Auth Controller)
+end
+subgraph Auth-service
+    direction TB
+    E(Get user of email)
+    H(Compare Hash password <br/>&#x28 bycrpt.compare &#x29)
+    J(Create JWT access token)
+end
+subgraph Mongoose-Model
+    Mo(Model layer)
+end
+
+Controller <--\> Auth-service
+Auth-service <--\> Mongoose-Model
+E --\> H
+H --\> J
+-->
 
 # Mongo Db Database Schema
 
