@@ -6,8 +6,8 @@ const usersSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      minlength: 2, // Minimum length of 2 characters
-      maxlength: 50, // Maximum length of 50 characters
+      minlength: 3,
+      maxlength: 255,
     },
     email: {
       type: String,
@@ -15,19 +15,15 @@ const usersSchema = new mongoose.Schema(
       unique: true,
       trim: true,
       lowercase: true,
-      validate: {
-        validator: function (value) {
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          return emailRegex.test(value);
-        },
-        message: (props) => `${props.value} is not a valid email!`,
-      },
-      maxlength: 320, // Maximum length for an email address
+      index: true,
+      minlength: 5,
+      maxlength: 255,
     },
     password: {
       type: String,
       required: true,
-      minlength: 6,
+      minlength: 8,
+      maxlength: 255,
     },
     _createdAt: Date,
     _updatedAt: Date,

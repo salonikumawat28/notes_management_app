@@ -2,8 +2,14 @@ const mongoose = require("mongoose");
 
 const notesSchema = new mongoose.Schema(
   {
-    title: String,
-    content: String,
+    title: {
+      type: String,
+      maxLength: 255,
+    },
+    content: {
+      type: String,
+      maxLength: 2048
+    },
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
