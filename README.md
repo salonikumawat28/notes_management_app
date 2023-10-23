@@ -315,12 +315,17 @@ Mermaid edit [link](https://www.mermaidchart.com/app/projects/1c640cf4-1f17-42bd
 ![mermaid-diagram-2023-10-23-122749](https://github.com/salonikumawat28/notes_management_app/assets/72411385/101ce447-0eff-42a8-b633-a12f00609a46)
 
 # Server side - Creating access token
-Mermaid [link](https://www.mermaidchart.com/app/projects/1c640cf4-1f17-42bd-b19c-eec224895dbc/diagrams/a3995b87-20b5-40bf-8c91-42853d6e8f81/version/v0.1/edit)
-![mermaid-diagram-2023-10-23-143431](https://github.com/salonikumawat28/notes_management_app/assets/72411385/46484929-5d8b-469d-a35e-89805f30d521)
+Mermaid [link](https://www.mermaidchart.com/app/projects/1c640cf4-1f17-42bd-b19c-eec224895dbc/diagrams/e8c5026b-b1eb-4f8e-b635-4b4eca8eddca/version/v0.1/edit)
+![mermaid-diagram-2023-10-23-151125](https://github.com/salonikumawat28/notes_management_app/assets/72411385/721e06e8-fc72-4d20-a031-46cacc7d3d9a)
 
 # Server side - Authenticate user flow
 Mermaid [link](https://www.mermaidchart.com/app/projects/1c640cf4-1f17-42bd-b19c-eec224895dbc/diagrams/cba58154-52a0-4ed0-bedf-fcddb33d8311/version/v0.1/edit)
 ![mermaid-diagram-2023-10-23-150404](https://github.com/salonikumawat28/notes_management_app/assets/72411385/3c2fe9ce-8005-4da8-ada8-7e1d34e1767a)
+
+# Server Side - login flow
+Mermaid [link](https://www.mermaidchart.com/app/projects/1c640cf4-1f17-42bd-b19c-eec224895dbc/diagrams/e8c5026b-b1eb-4f8e-b635-4b4eca8eddca/version/v0.1/edit)
+![mermaid-diagram-2023-10-23-150733](https://github.com/salonikumawat28/notes_management_app/assets/72411385/cc08d1f3-4221-4642-8050-8f81a6127525)
+
 
 
 
