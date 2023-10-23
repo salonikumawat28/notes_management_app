@@ -330,6 +330,475 @@ Mermaid [link](https://www.mermaidchart.com/app/projects/1c640cf4-1f17-42bd-b19c
 Mermaid [link](https://www.mermaidchart.com/app/projects/1c640cf4-1f17-42bd-b19c-eec224895dbc/diagrams/7f25180f-67e8-402c-97b3-3d2239b972bf/version/v0.1/edit)
 ![mermaid-diagram-2023-10-23-172740](https://github.com/salonikumawat28/notes_management_app/assets/72411385/f790b27e-d993-4f60-a1bb-38027e7841e6)
 
+<table>
+<tr>
+<td><b/>API</td><td><b/>Curl command </td> <td> <b/>Sample Success response </td> <td> <b/>Sample failure response </td>
+</tr>
+<tr>
+<td>
+1. Signup:
+</td>
+<td>
+
+```
+curl -X POST http://localhost:9000/api/auth/signup -H 'Content-Type: application/json' -d '{"name": "First Last", "email": "test4@test.com", "password": "Test@1234"}'
+```
+
+</td>
+<td>
+    
+```json
+{
+  "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTM2ODYyZGVmMmVhY2VmM2FjOWExYjIiLCJpYXQiOjE2OTgwNzIxMDl9.FstnAA-lm2LYWnHcPfHyfEamFuVKXLPq6T7kc7dtIoY"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "ValidationError",
+    "message": "Validation failed",
+    "fieldErrors": [
+      {
+        "field": "name",
+        "message": "Name must contain only letters and spaces"
+      },
+      {
+        "field": "password",
+        "message": "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character"
+      }
+    ],
+    "globalErrors": []
+  }
+}
+```
+
+</td>
+</tr>
+
+
+<tr>
+<td>
+2. Login
+</td>
+<td>
+
+```
+curl -X POST http://localhost:9000/api/auth/login -H 'Content-Type: application/json' -d '{"email": "test4@test.com", "password": "Test@1234"}'
+```
+
+</td>
+<td>
+    
+```json
+{
+  "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTM2ODYyZGVmMmVhY2VmM2FjOWExYjIiLCJpYXQiOjE2OTgwNzIxMDl9.FstnAA-lm2LYWnHcPfHyfEamFuVKXLPq6T7kc7dtIoY"
+}
+```
+
+</td>
+<td>
+
+Example 1:
+```json
+{
+  "error": {
+    "name": "UnauthorizedError",
+    "message": "Invalid credentials."
+  }
+}
+```
+Example 2:
+```json
+{
+  "error": {
+    "name": "ValidationError",
+    "message": "Validation failed",
+    "fieldErrors": [
+      {
+        "field": "email",
+        "message": "Email must be a valid email address"
+      }
+    ],
+    "globalErrors": []
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+3. Get a User
+</td>
+<td>
+
+```
+curl -X GET http://localhost:9000/api/users/me -H "Authorization: Bearer $TOKEN"
+```
+
+</td>
+<td>
+    
+```json
+{
+  "_id": "6536862def2eacef3ac9a1b2",
+  "name": "First Last",
+  "email": "test4@test.com"
+} 
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "NotFoundError",
+    "message": "User not found."
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+4. Update partial information of user
+</td>
+<td>
+
+```
+curl -X PATCH http://localhost:9000/api/users/me -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"bla": "updatedFirst Last"}'
+```
+
+</td>
+<td>
+    
+```json
+{
+  "_id": "6536862def2eacef3ac9a1b2",
+  "name": "updatedFirst Last",
+  "email": "test4@test.com"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "ValidationError",
+    "message": "Validation failed",
+    "fieldErrors": [
+      {
+        "field": "name",
+        "message": "Name must contain only letters and spaces"
+      }
+    ],
+    "globalErrors": []
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+5. Update password of user
+</td>
+<td>
+
+```
+curl -X PATCH http://localhost:9000/api/users/me/password -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"password": "Test@1235"}'
+```
+
+</td>
+<td>
+    
+```json
+{
+  "message": "Password updated successfully"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "ValidationError",
+    "message": "Validation failed",
+    "fieldErrors": [
+      {
+        "field": "password",
+        "message": "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character"
+      }
+    ],
+    "globalErrors": []
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+6. Delete a user
+</td>
+<td>
+
+```
+curl -X DELETE http://localhost:9000/api/users/me -H "Authorization: Bearer $TOKEN"
+```
+
+</td>
+<td>
+    
+```json
+{
+  "message": "User and associated notes deleted successfully"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "UnauthorizedError",
+    "message": "No token provided"
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+7. Create a new note
+</td>
+<td>
+
+```
+curl -X POST http://localhost:9000/api/notes -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Test 2 Title 2", "content": "Test 2 content 2"}'
+```
+
+</td>
+<td>
+    
+```json
+{
+  "_id": "6536913d50415d6fc5e6b488",
+  "title": "Test 2 Title 1",
+  "content": "Test 2 content 1",
+  "_createdAt": "2023-10-23T15:29:01.318Z",
+  "_updatedAt": "2023-10-23T15:29:01.318Z"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "ValidationError",
+    "message": "Validation failed",
+    "fieldErrors": [],
+    "globalErrors": [
+      "\"value\" must contain at least one of [title, content]"
+    ]
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+8. Update partial information of a note
+</td>
+<td>
+
+```
+curl -X PATCH http://localhost:9000/api/notes/$NOTE_ID -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Updated Test 2 Title 1"}'
+```
+
+</td>
+<td>
+    
+```json
+{
+  "_id": "6536913d50415d6fc5e6b488",
+  "title": "Updated Test 2 Title 1",
+  "content": "Test 2 content 1",
+  "_updatedAt": "2023-10-23T15:33:13.513Z",
+  "_createdAt": "2023-10-23T15:29:01.318Z"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "ValidationError",
+    "message": "Validation failed",
+    "fieldErrors": [],
+    "globalErrors": [
+      "\"value\" must contain at least one of [title, content]"
+    ]
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+9. Get a particular note
+</td>
+<td>
+
+```
+curl -X GET http://localhost:9000/api/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
+```
+
+</td>
+<td>
+    
+```json
+{
+  "_id": "6536913d50415d6fc5e6b488",
+  "title": "Updated Test 2 Title 1",
+  "content": "Test 2 content 1",
+  "_updatedAt": "2023-10-23T15:33:13.513Z",
+  "_createdAt": "2023-10-23T15:29:01.318Z"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "NotFoundError",
+    "message": "Note not found."
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+10. Get all note
+</td>
+<td>
+
+```
+curl -X GET http://localhost:9000/api/notes -H "Authorization: Bearer $TOKEN"
+```
+
+</td>
+<td>
+    
+```json
+[
+  {
+    "_id": "6536913d50415d6fc5e6b488",
+    "title": "Updated Test 2 Title 1",
+    "content": "Test 2 content 1",
+    "_updatedAt": "2023-10-23T15:33:13.513Z",
+    "_createdAt": "2023-10-23T15:29:01.318Z"
+  },
+  {
+    "_id": "6536918950415d6fc5e6b48a",
+    "title": "Test 2 Title 2",
+    "_updatedAt": "2023-10-23T15:30:17.412Z",
+    "_createdAt": "2023-10-23T15:30:17.412Z"
+  },
+  {
+    "_id": "653691f850415d6fc5e6b48c",
+    "title": "Test 2 Title 2",
+    "content": "Test 2 content 2",
+    "_updatedAt": "2023-10-23T15:32:08.517Z",
+    "_createdAt": "2023-10-23T15:32:08.517Z"
+  }
+]
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "UnauthorizedError",
+    "message": "No token provided"
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+11. Delete a note
+</td>
+<td>
+
+```
+curl -X DELETE http://localhost:9000/api/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
+```
+
+</td>
+<td>
+    
+```json
+{
+  "message": "Note deleted successfully"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "CastError",
+    "message": "Cast to ObjectId failed for value \"1126$\" (type string) at path \"_id\" for model \"Notes\""
+  }
+}
+```
+
+</td>
+</tr>
+
+
+
+
+
+
 
 
 
