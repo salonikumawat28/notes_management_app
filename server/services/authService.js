@@ -1,14 +1,14 @@
-const config = require("../configs/config");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const { UnauthorizedError, ConflictError } = require("../errors/errors");
-const usersModel = require("../models/usersModel");
+const config = require('../configs/config');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const { UnauthorizedError, ConflictError } = require('../errors/errors');
+const usersModel = require('../models/usersModel');
 
 async function signUp({ name, email, password }) {
   // Data validation (which involves database)
   const userExists = await usersModel.exists({ email });
   if (userExists) {
-    throw new ConflictError("Email already exists.");
+    throw new ConflictError('Email already exists.');
   }
 
   // Encrypt the password.
@@ -33,13 +33,13 @@ async function login({ email, password }) {
   // Data validation (which involves database)
   const user = await usersModel.findOne({ email }).select('_id password');
   if (!user) {
-    throw new UnauthorizedError("Invalid credentials.");
+    throw new UnauthorizedError('Invalid credentials.');
   }
 
   // Compare the password
   const passwordMatched = await bcrypt.compare(password, user.password);
   if (!passwordMatched) {
-    throw new UnauthorizedError("Invalid credentials.");
+    throw new UnauthorizedError('Invalid credentials.');
   }
 
   // Create auth token
