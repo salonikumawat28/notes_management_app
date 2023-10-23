@@ -824,8 +824,32 @@ H --\> J
 
 # Server side - Authenticate user flow
 
-Mermaid [link](https://www.mermaidchart.com/app/projects/1c640cf4-1f17-42bd-b19c-eec224895dbc/diagrams/cba58154-52a0-4ed0-bedf-fcddb33d8311/version/v0.1/edit)
 ![mermaid-diagram-2023-10-23-150404](https://github.com/salonikumawat28/notes_management_app/assets/72411385/3c2fe9ce-8005-4da8-ada8-7e1d34e1767a)
+
+<!--
+flowchart TB
+subgraph Request-Validator
+    Re(Request Validator)
+end
+subgraph Authenticator
+    direction TB
+    CheckReqHeader(Check if the <i>req.headers.authorization</i> present)
+    CheckToken(Check if token is <i>Bearer</i> token)
+    JWT(Validate JWT token)
+    Decode(Decode JWT token to get userId)
+    SetUserId(Sets userId to <i>req.authenticated.UserId</i>)
+end
+subgraph Controller
+    Co(Use authenticatedUserId as userId)
+end
+
+Re --\> Authenticator
+Authenticator --\> Controller
+CheckReqHeader --\> CheckToken
+CheckToken --\> JWT
+JWT --\> Decode
+Decode --\> SetUserId
+-->
 
 # Server Side - login flow
 
