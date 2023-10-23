@@ -754,8 +754,48 @@ module.exports = userModel;
 
 # Server Flow Diagram
 
-Mermaid edit [link](https://www.mermaidchart.com/app/projects/1c640cf4-1f17-42bd-b19c-eec224895dbc/diagrams/6691bdfd-0093-4330-8e49-4f23eb4cefe9/version/v0.1/edit)
 ![mermaid-diagram-2023-10-23-122749](https://github.com/salonikumawat28/notes_management_app/assets/72411385/101ce447-0eff-42a8-b633-a12f00609a46)
+
+<!--  
+flowchart TB
+subgraph Client
+    RequestStart[Request From frontend]
+end
+subgraph Server
+    direction TB
+    ExpressApp[<b>Express.js App</b>]
+    Cors[<b>Cors</b> <br> Add cors to response]
+    JsonParser[<b>Json Parser</b> <br> Convert json to js object in request body]
+    RouterCondition{Decide Router <br/>based on URL}
+    Router[<b>Router</b><br/>Decides sub-routing of the URL.]
+    RequestPreProcessor[<b>Request pre processor</b><br/>Pre process the request]
+    RequestValidator[<b>Request validator</b><br/>Validates the request<br/>Short circuits to error middleware if validation fails.]
+    Authenticator[<b>Authenticator</b><br/>Check if user is authenticated<br/>Short circuits to error middleware if authentication fails.]
+    Controller[<b>Controller layer</b><br/>Controller to handle request, call service and create response.<br/>Goes to error middlware in case of any errors.]
+    Service[<b>Service layer</b><br/> Service to handle business logic]
+    Model[<b>Model layer</b><br/>Mongoose models for database communication]
+end
+subgraph Database
+    Db[<b>Database</b><br/> MongoDB]
+end
+
+RequestStart <--\> |1. Client request.<br/>17. Send response to client| ExpressApp
+ExpressApp --\> |2. Request & response to fill in.| Cors
+Cors --\> |3. req, res with cors headers.| JsonParser
+JsonParser --\> |4. req with js object body, res| RouterCondition
+RouterCondition --\> |5. calls router specific to URL.| Router
+Router --\> |6. calls sub-router middlewares| RequestPreProcessor
+RequestPreProcessor --\> |7. pre-processed req, res| RequestValidator
+RequestValidator --\> |8. valdiated req, res| Authenticator
+Authenticator --\> |9. authenticated req, res | Controller
+Controller --\> |10. calls service layer| Service
+Service <--\> |11. calls model layer for db communication| Model
+Model <--\> |12. calls db for CRUD operations<br/>13. Database returns response.| Database
+Model --\> |14. returns data| Service
+Service --\> |15. returns data| Controller
+Controller --\> |16. send response with data| ExpressApp 
+
+-->
 
 # Server side - Creating access token
 
