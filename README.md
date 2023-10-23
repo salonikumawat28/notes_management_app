@@ -1,6 +1,37 @@
 # Notes Management App
 
-This application creates a management solution for the addition, modification, and deletion of notes.
+Notes Management App is a one stop solution to create, update and view your notes at one place.
+
+# Project outline
+## Backend
+Backend is designed in ExpressJS. We have leveraged common web design principles including REST APIs, stateless server, modularized code etc. Here is how request flow looks like:
+![mermaid-diagram-2023-10-23-122749](https://github.com/salonikumawat28/notes_management_app/assets/72411385/101ce447-0eff-42a8-b633-a12f00609a46)
+### Backend server in nutshell
+Here are how a client request goes through different parts of the backend server:
+1. Client sends request to the server
+2. Express.js app gets the request and passes it a chain of middlewares.
+3. **CORS**: Cors middleware adds the cors headers to the response to enable cross origin resource sharing. This enables client to receive successful response from the server without facing any cors issues.
+4. **JSON Parse**r: Json Parser middleware parses the request JSON body and replaces it with JS object so that it can be easily used by the express server.
+5. Router decision: Based on the URL, first level of router is chosen. For example, for `/login`, `/signup`, `authRouter` is chosen; and for `/notes`, `/notes/1234`, `notesRouter is chosen`.
+6. **Router**: First level of router decides the sub-routing of the URL and sends the request through a chain of middlewares specific to that URL. For example, `authRouter` sends `/login` request through chain of middleware specific to login like `validateLoginRequest` etc.
+7. **Request pre-processor**: Each request goes through its own specific pre-processor which sanitizes the request body, URL params, query parameters etc. For example, it removes the unwanted variables from the request body; it trims the necessary values and so on.
+8. **Request validator**: Each request goes through its own validator which validates the request data be it body, URL params or query parameters. If the validation fails, this step short circuits to `ErrorHandler` middleware which then sends the error response to the client.
+9. **Authenticator**: If any API request is not public, it goes through `authenticator` middleware. This middlware checks if the request header has JWT token. If yes, it checks verifies its authnticity. If authentic, it decodes the authenticated user id from the JWT token and sets it to the `request.authenticatedUserId` so that it can be used by future middlewares. If authentication fails, this step short circuits to the `ErrorHandler` middlware.
+10. **Controller**: Controller ensures that request went through all the necessary middlewares. If it did, controller sends the request to the service layer to get the data. Once it receives data, it creates response from it and sends the response back to the express.js app. In case of any errors, this step calls `ErrorHandler` middleware.
+11. **Service Layer**: Service layer contains all the business logic. It is also responsible to call models to get the data from database.
+12. **Models**: Mongoose models are called to communicate with our MongoDB database. These models does a few important things like creating collections, performing CRUD operations, indexing databases on text for faster search of sub-strings, auto-updating values like `createdAt`, `modifiedAt` fields.
+13. **Database**: We are using MongoDb database for notes and user management. We will discuss more about it in later sections.
+## Database
+We are using MongoDB database which is a NoSQL database to manage notes and users. This is the schema we currently have:
+![mermaid-diagram-2023-10-23-172740](https://github.com/salonikumawat28/notes_management_app/assets/72411385/f790b27e-d993-4f60-a1bb-38027e7841e6)
+### Schema
+1. We have 2 collections, notes and users (check above diagram for details).
+2. Each user collection has _id, name, email and password.
+3. Each Note collection has _id, title, content, author, _createdAt, _updatedAt fields.
+4. **Author** of Note collection refers to a User document.
+5. A user can have multiple notes but a note can have only one user.
+6. _id and author both are indexed in Note collection so that we can search the note quickly even by user id which is author.
+7. _id and email is indexed in User collection
 
 # Creating quickstart projects
 
@@ -753,7 +784,6 @@ module.exports = userModel;
 
 # Server Flow Diagram
 
-![mermaid-diagram-2023-10-23-122749](https://github.com/salonikumawat28/notes_management_app/assets/72411385/101ce447-0eff-42a8-b633-a12f00609a46)
 
 <!--  
 flowchart TB
@@ -877,7 +907,6 @@ H --\> J
 
 # Mongo Db Database Schema
 
-![mermaid-diagram-2023-10-23-172740](https://github.com/salonikumawat28/notes_management_app/assets/72411385/f790b27e-d993-4f60-a1bb-38027e7841e6)
 
 # Frontent Flow Diagram
 
