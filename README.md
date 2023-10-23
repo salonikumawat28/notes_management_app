@@ -1436,13 +1436,12 @@ sequenceDiagram
 ## Text indexing
 
 How Text Index Works:
-Tokenization:
-
+### Tokenization:
 When you create a text index, MongoDB tokenizes the text in the specified fields. Tokenization involves breaking down the text into individual words or tokens.
-Stemming:
 
+### Stemming:
 MongoDB also applies stemming during text indexing. Stemming reduces words to their root or base form, so variations of a word (e.g., "running" and "ran") are treated as the same.
-Search Functionality:
 
+### Search Functionality:
 Once the text index is created, you can use the $text operator in queries to perform text searches. For example, you might use queries like { $text: { $search: 'keyword' } } to find documents containing a specific keyword in the indexed fields.
 
