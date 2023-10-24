@@ -4,15 +4,15 @@ Notes Management App is a one stop solution to create, update and view your note
 
 # Live links
 ## FrontEnd: 
-FRONTEND_PROD_URL: https://notes-management-app-client-bcgoqllgv-saloni-kumawats-projects.vercel.app/
+FRONTEND_PROD_URL: https://notes-management-app-client-n2753k126-saloni-kumawats-projects.vercel.app
 
-FRONTEND_DEV_URL: http://localhost:3000/
+FRONTEND_URL: http://localhost:3000/
 
 ## BackEnd: 
 BACKEND_PROD_URL:
 https://notes-management-app-server-d246095aa0a9.herokuapp.com/
 
-BACKEND_DEV_URL: http://localhost:9000/
+BACKEND_URL: http://localhost:9000/
 
 # App Usage
 We can communicate with the App by accessing FrontEnd via browser or Backend via CURL commands.
@@ -29,7 +29,7 @@ Signup:
 <td>
 
 ```
-curl -X POST BACKEND_DEV_URLapi/v1/auth/signup -H 'Content-Type: application/json' -d '{"name": "First Last", "email": "test4@test.com", "password": "Test@1234"}'
+curl -X POST ${BACKEND_URL}api/v1/auth/signup -H 'Content-Type: application/json' -d '{"name": "First Last", "email": "test4@test.com", "password": "Test@1234"}'
 ```
 
 </td>
@@ -74,7 +74,7 @@ Login
 <td>
 
 ```
-curl -X POST BACKEND_DEV_URLapi/v1/auth/login -H 'Content-Type: application/json' -d '{"email": "test4@test.com", "password": "Test@1234"}'
+curl -X POST ${BACKEND_URL}api/v1/auth/login -H 'Content-Type: application/json' -d '{"email": "test5@test.com", "password": "Test@1234"}'
 ```
 
 </td>
@@ -128,7 +128,7 @@ Get a User
 <td>
 
 ```
-curl -X GET BACKEND_DEV_URLapi/v1/users/me -H "Authorization: Bearer $TOKEN"
+curl -X GET ${BACKEND_URL}api/v1/users/me -H "Authorization: Bearer $TOKEN"
 ```
 
 </td>
@@ -164,7 +164,7 @@ Update partial information of user
 <td>
 
 ```
-curl -X PATCH BACKEND_DEV_URLapi/v1/users/me -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"bla": "updatedFirst Last"}'
+curl -X PATCH ${BACKEND_URL}api/v1/users/me -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"bla": "updatedFirst Last"}'
 ```
 
 </td>
@@ -207,7 +207,7 @@ Update password of user
 <td>
 
 ```
-curl -X PATCH BACKEND_DEV_URLapi/v1/users/me/password -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"password": "Test@1235"}'
+curl -X PATCH ${BACKEND_URL}api/v1/users/me/password -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"password": "Test@1235"}'
 ```
 
 </td>
@@ -248,7 +248,7 @@ Delete a user
 <td>
 
 ```
-curl -X DELETE BACKEND_DEV_URLapi/v1/users/me -H "Authorization: Bearer $TOKEN"
+curl -X DELETE ${BACKEND_URL}api/v1/users/me -H "Authorization: Bearer $TOKEN"
 ```
 
 </td>
@@ -282,7 +282,7 @@ Create a new note
 <td>
 
 ```
-curl -X POST BACKEND_DEV_URLapi/v1/notes -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Test 2 Title 2", "content": "Test 2 content 2"}'
+curl -X POST ${BACKEND_URL}api/v1/notes -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Test 2 Title 2", "content": "Test 2 content 2"}'
 ```
 
 </td>
@@ -322,7 +322,7 @@ Update partial information of a note
 <td>
 
 ```
-curl -X PATCH BACKEND_DEV_URLapi/v1/notes/$NOTE_ID -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Updated Test 2 Title 1"}'
+curl -X PATCH ${BACKEND_URL}api/v1/notes/$NOTE_ID -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Updated Test 2 Title 1"}'
 ```
 
 </td>
@@ -362,7 +362,7 @@ Get a particular note
 <td>
 
 ```
-curl -X GET BACKEND_DEV_URLapi/v1/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
+curl -X GET ${BACKEND_URL}api/v1/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
 ```
 
 </td>
@@ -400,7 +400,7 @@ Get all notes
 <td>
 
 ```
-curl -X GET BACKEND_DEV_URLapi/v1/notes -H "Authorization: Bearer $TOKEN"
+curl -X GET ${BACKEND_URL}api/v1/notes -H "Authorization: Bearer $TOKEN"
 ```
 
 </td>
@@ -453,7 +453,7 @@ Search notes by text
 <td>
 
 ```
-curl -X GET "BACKEND_DEV_URLapi/v1/notes?search=bla" -H "Authorization: Bearer $TOKEN"
+curl -X GET "${BACKEND_URL}api/v1/notes?search=bla" -H "Authorization: Bearer $TOKEN"
 ```
 
 </td>
@@ -507,7 +507,7 @@ Delete a note
 <td>
 
 ```
-curl -X DELETE BACKEND_DEV_URLapi/v1/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
+curl -X DELETE ${BACKEND_URL}api/v1/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
 ```
 
 </td>
@@ -537,7 +537,7 @@ curl -X DELETE BACKEND_DEV_URLapi/v1/notes/$NOTE_ID -H "Authorization: Bearer $T
 
 ## FrontEnd Server
 Here are the following ways user can communicate with the notes management app:
-1. If user is not authenticated, user can go to signup page at FRONTEND_DEV_URLsignup, and to login page at FRONTEND_DEV_URLlogin.
+1. If user is not authenticated, user can go to signup page at ${FRONTEND_URL}signup, and to login page at ${FRONTEND_URL}login.
 2. User can submit signup form to create account and submit login form to log into the account.
 3. If user is authenticated, user will see the authenticated home page irrespective of the URL.
 4. In authenticated page, user can see the UI to create a new note. If user clicks on it, the UI will expand and user can add title and content of the note. When user moves out of the create new note UI, the note is automatically saved.
