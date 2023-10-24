@@ -19,14 +19,14 @@ Here are how a client request goes through different parts of the backend server
 9. **Authenticator**: If any API request is not public, it goes through `authenticator` middleware. This middlware checks if the request header has JWT token. If yes, it checks verifies its authnticity. If authentic, it decodes the authenticated user id from the JWT token and sets it to the `request.authenticatedUserId` so that it can be used by future middlewares. If authentication fails, this step short circuits to the `ErrorHandler` middlware.
 10. **Controller**: Controller ensures that request went through all the necessary middlewares. If it did, controller sends the request to the service layer to get the data. Once it receives data, it creates response from it and sends the response back to the express.js app. In case of any errors, this step calls `ErrorHandler` middleware.
 11. **Service Layer**: Service layer contains all the business logic. It is also responsible to call models to get the data from database.
-12. **Models**: Mongoose models are called to communicate with our MongoDB database. These models does a few important things like creating collections, performing CRUD operations, indexing databases on text for faster search of sub-strings, auto-updating values like `createdAt`, `modifiedAt` fields.
+12. **Models**: Mongoose models are called to communicate with our MongoDB database. These models does a few important things like creating collections, performing CRUD operations, indexing databases on text for faster search of sub-strings, auto-updating values like `_createdAt`, `_updatedAt` fields.
 13. **Database**: We are using MongoDb database for notes and user management. We will discuss more about it in later sections.
 ## Database
 We are using MongoDB database which is a NoSQL database to manage notes and users. 
 ### Why NoSQL?
 We have chosen NoSQL over SQL for this project because of various reasons:
 1. **No ACID**: We have no requriments of any ACID transactions in any requests as of now.
-2. **Development Speed**: NoSQL databases are easy and fast to setup and thus it makes development quicker especially in intiial phases.
+2. **Development Speed**: NoSQL databases are easy and fast to setup and thus it makes development quicker especially in initial phases.
 3. **Scalability and Avalabiltiy**: NoSQL databases are easily scaled horizontally, can be distributed across clusters and thus can be highly available. The same can be done with SQL as well but not with that ease.
 ### Schema
 This is the schema we currently have:
@@ -100,12 +100,12 @@ Here are the API endpoints which are supported:
 </tr>
 <tr>
 <td>
-1. Signup:
+Signup:
 </td>
 <td>
 
 ```
-curl -X POST http://localhost:9000/api/auth/signup -H 'Content-Type: application/json' -d '{"name": "First Last", "email": "test4@test.com", "password": "Test@1234"}'
+curl -X POST http://localhost:9000/api/v1/auth/signup -H 'Content-Type: application/json' -d '{"name": "First Last", "email": "test4@test.com", "password": "Test@1234"}'
 ```
 
 </td>
@@ -145,12 +145,12 @@ curl -X POST http://localhost:9000/api/auth/signup -H 'Content-Type: application
 
 <tr>
 <td>
-2. Login
+Login
 </td>
 <td>
 
 ```
-curl -X POST http://localhost:9000/api/auth/login -H 'Content-Type: application/json' -d '{"email": "test4@test.com", "password": "Test@1234"}'
+curl -X POST http://localhost:9000/api/v1/auth/login -H 'Content-Type: application/json' -d '{"email": "test4@test.com", "password": "Test@1234"}'
 ```
 
 </td>
@@ -199,12 +199,12 @@ Example 2:
 
 <tr>
 <td>
-3. Get a User
+Get a User
 </td>
 <td>
 
 ```
-curl -X GET http://localhost:9000/api/users/me -H "Authorization: Bearer $TOKEN"
+curl -X GET http://localhost:9000/api/v1/users/me -H "Authorization: Bearer $TOKEN"
 ```
 
 </td>
@@ -235,12 +235,12 @@ curl -X GET http://localhost:9000/api/users/me -H "Authorization: Bearer $TOKEN"
 
 <tr>
 <td>
-4. Update partial information of user
+Update partial information of user
 </td>
 <td>
 
 ```
-curl -X PATCH http://localhost:9000/api/users/me -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"bla": "updatedFirst Last"}'
+curl -X PATCH http://localhost:9000/api/v1/users/me -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"bla": "updatedFirst Last"}'
 ```
 
 </td>
@@ -278,12 +278,12 @@ curl -X PATCH http://localhost:9000/api/users/me -H "Authorization: Bearer $TOKE
 
 <tr>
 <td>
-5. Update password of user
+Update password of user
 </td>
 <td>
 
 ```
-curl -X PATCH http://localhost:9000/api/users/me/password -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"password": "Test@1235"}'
+curl -X PATCH http://localhost:9000/api/v1/users/me/password -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"password": "Test@1235"}'
 ```
 
 </td>
@@ -319,12 +319,12 @@ curl -X PATCH http://localhost:9000/api/users/me/password -H "Authorization: Bea
 
 <tr>
 <td>
-6. Delete a user
+Delete a user
 </td>
 <td>
 
 ```
-curl -X DELETE http://localhost:9000/api/users/me -H "Authorization: Bearer $TOKEN"
+curl -X DELETE http://localhost:9000/api/v1/users/me -H "Authorization: Bearer $TOKEN"
 ```
 
 </td>
@@ -353,12 +353,12 @@ curl -X DELETE http://localhost:9000/api/users/me -H "Authorization: Bearer $TOK
 
 <tr>
 <td>
-7. Create a new note
+Create a new note
 </td>
 <td>
 
 ```
-curl -X POST http://localhost:9000/api/notes -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Test 2 Title 2", "content": "Test 2 content 2"}'
+curl -X POST http://localhost:9000/api/v1/notes -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Test 2 Title 2", "content": "Test 2 content 2"}'
 ```
 
 </td>
@@ -393,12 +393,12 @@ curl -X POST http://localhost:9000/api/notes -H 'Content-Type: application/json'
 
 <tr>
 <td>
-8. Update partial information of a note
+Update partial information of a note
 </td>
 <td>
 
 ```
-curl -X PATCH http://localhost:9000/api/notes/$NOTE_ID -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Updated Test 2 Title 1"}'
+curl -X PATCH http://localhost:9000/api/v1/notes/$NOTE_ID -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Updated Test 2 Title 1"}'
 ```
 
 </td>
@@ -433,12 +433,12 @@ curl -X PATCH http://localhost:9000/api/notes/$NOTE_ID -H 'Content-Type: applica
 
 <tr>
 <td>
-9. Get a particular note
+Get a particular note
 </td>
 <td>
 
 ```
-curl -X GET http://localhost:9000/api/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
+curl -X GET http://localhost:9000/api/v1/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
 ```
 
 </td>
@@ -471,12 +471,12 @@ curl -X GET http://localhost:9000/api/notes/$NOTE_ID -H "Authorization: Bearer $
 
 <tr>
 <td>
-10. Get all note
+Get all notes
 </td>
 <td>
 
 ```
-curl -X GET http://localhost:9000/api/notes -H "Authorization: Bearer $TOKEN"
+curl -X GET http://localhost:9000/api/v1/notes -H "Authorization: Bearer $TOKEN"
 ```
 
 </td>
@@ -524,12 +524,66 @@ curl -X GET http://localhost:9000/api/notes -H "Authorization: Bearer $TOKEN"
 
 <tr>
 <td>
-11. Delete a note
+Search notes by text
 </td>
 <td>
 
 ```
-curl -X DELETE http://localhost:9000/api/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
+curl -X GET "http://localhost:9000/api/v1/notes?search=bla" -H "Authorization: Bearer $TOKEN"
+```
+
+</td>
+<td>
+    
+```json
+[
+  {
+    "_id": "6536bc3dcdcb67dd1666f244",
+    "title": "Test 2 bla Title 1",
+    "content": "Test 2 bla content 1",
+    "_updatedAt": "2023-10-23T18:32:29.600Z",
+    "_createdAt": "2023-10-23T18:32:29.600Z"
+  },
+  {
+    "_id": "6536bc44cdcb67dd1666f246",
+    "title": "Test 2 Title 1",
+    "content": "Test 2 bla content 1",
+    "_updatedAt": "2023-10-23T18:32:36.370Z",
+    "_createdAt": "2023-10-23T18:32:36.370Z"
+  },
+  {
+    "_id": "6536bc2ccdcb67dd1666f240",
+    "title": "Test 2 bla Title 1",
+    "content": "Test 2 content 1",
+    "_updatedAt": "2023-10-23T18:32:12.990Z",
+    "_createdAt": "2023-10-23T18:32:12.990Z"
+  }
+]
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "UnauthorizedError",
+    "message": "No token provided"
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+Delete a note
+</td>
+<td>
+
+```
+curl -X DELETE http://localhost:9000/api/v1/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
 ```
 
 </td>
@@ -599,7 +653,52 @@ When user hits a URL which requires authentication, then the authenticator middl
 5. Set the user id as `request.authenticatedUserId` so that it can be used by controller.
 
 ### Long lived access token vs Short lived - Trade offs
-TODO
+Long lived access tokens are token with longer expiry say 1-2 days or may be no expiry at all. Since there is no expiry, user can use the tokens even after logout (if copied somewhere before logout). This creates a security risk and makes it vulnerable.
+
+A solution is to have short lived access tokens say 90 secs and an additional token called refresh token. When user sends an expired access token, server invalidates the request and client sends a new request with refresh token to get the new access token. This way, even if the access token is leaked, it will shortly expire.
+
+We currently have long lived access token as its easier to implement for a POC.
+
+## FrontEnd
+1. When we login or signup, we get access token in return which we store both in `localstorage` and in `AuthContext`. 
+4. For all authenticated requests, client intercepts the axios calls and add `authorization` header in the axios request.
+3. When user logs out, we remove the access token from `localstorage` and `AuthContext`.
+2. When we logout in other tab or window for the same origin, we listen to that change event of `localstorage` so that we can know in our tab that user is logged out or logged in.
+
+# Unit and E2E testing
+Our testing is very limited currently. FrontEnd doesn't have any unit or e2e tests. In backend, we have unit testing but no E2E testing. In unit testing also, we only have unit tests for contoller layer and service layer, but no unit tests for validator, authenticator, request pre-processor, router etc.
+
+We are using `mocha`, `chai` and `sinon` for unit testing.
+
+To run unit tests in backend:
+```
+cd server
+npm run test
+```
+
+# Bottlenecks and Missing features
+## JWT token not bound to browser session
+Currently client can copy the access token and send an API request using CURL commands using the same access token. This is a securty risk as if anyone copies the token, they can access the APIs from anywhere. 
+
+To fix this, we can take browser information from the request during signup and login and add that as part of JWT token and verify that the information matches with all new request's browser information.
+
+## Access token has no expiry
+Currently access token has no expiry. This poses security risk. We should use short lived access token + refresh token concept to solve this.
+
+## No Logout functionality in server
+Currently client has `Logout`` feature which when clicked, the access token is removed from the client so that user needs to login again. The problem is that the access token itself has no expiry as its long living token and server will authenticate the access token if anyone has it even though client has logged out.
+
+There are few potential solutions for this:
+1. We should add a logout functionality in server which adds the tokens in a revoke list so that if anyone tries to send a request with that revoked token, we invalidate. This revoke list should be maintained in database for persistance.
+2. Instead of long lived access tokens, we should use concept of short lived access tokens along with refresh tokens. This makes sure that after a certain time period, then access token is expired.
+3. Combination of above steps is a better idea as only step 1 will bloat up the revoke list and we will not be able to clean the list frequently. 
+
+## Missing features - FrontEnd
+1. **No search functionality in FrontEnd** - We have search functionality in Backend but currently we are not using it in FrontEnd.
+2. **Code needs better structuring** - Currenly React component itself is making the axios calls. Ideallywe should have another layer which should do this.
+3. **No caching** - Having caching helps in faster display of cached data. The cached data might be stale but is better than showing loading indicator in the meantime the latest data is fetched.
+4. **No offline first experience** - Currently if user create a note in FrontEnd when user is offline, the create note will fail. Ideally we should optimistaclly show the created note in the notes list display with an icon to indicate its not yet uploaded. This gives better UX.
+5. **No unit or e2e tests** - We should add unit tests and e2e tests in FrontEnd.
 
 # Code structuring
 ```
@@ -733,7 +832,7 @@ Solution for this is using `React context`. Instead if defining a `useState` var
 ## Creating express app
 
 1. Create the using `const app = express()` line.
-2. `app.use()` is used to setup a lot of things in the express app. One of the main example is to set our URL routers. Example: `app.use('/api/users', usersRouter);`
+2. `app.use()` is used to setup a lot of things in the express app. One of the main example is to set our URL routers. Example: `app.use('/api/v1/users', usersRouter);`
 
 ## Starting the express app
 
@@ -772,7 +871,7 @@ Cluster URL example:
 mongodb+srv://Cluster93678:Cluster93678@cluster93678.0n6ht8f.mongodb.net?retryWrites=true&w=majority"
 
 Database URL example:
-mongodb+srv://Cluster93678:Cluster93678@cluster93678.0n6ht8f.mongodb.net/api/notes_management?retryWrites=true&w=majority"
+mongodb+srv://Cluster93678:Cluster93678@cluster93678.0n6ht8f.mongodb.net/api/v1/notes_management?retryWrites=true&w=majority"
 ```
 
 In above example:

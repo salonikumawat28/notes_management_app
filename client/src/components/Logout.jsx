@@ -5,7 +5,6 @@ function Logout() {
 
     function logout(event) {
         event.preventDefault(); // Prevent the default form submission behavior
-        console.log("logout");
         setAuthToken("");
     }
 

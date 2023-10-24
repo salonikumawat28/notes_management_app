@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import apiClient from "../apiClient";
 import "../css/EditableNote.css";
 import { useNotesContext } from "../contexts/NotesContext";
+import utils from "../utils/utils";
 
 function EditableNote({
   initialNote = {},
@@ -9,7 +10,6 @@ function EditableNote({
   onOutsideClick = () => {},
 }) {
   const { notes, setNotes } = useNotesContext();
-  console.log("Initial editable note: ", initialNote);
   const [note, setNote] = useState(initialNote);
   const editableNoteRef = useRef(null);
 
@@ -34,11 +34,12 @@ function EditableNote({
 
     async function saveOrUpdateNote() {
       const response = !note._id
-        ? await apiClient.post("http://localhost:9000/notes/", note)
-        : await apiClient.put("http://localhost:9000/notes/", note);
+        ? await apiClient.post("http://localhost:9000/api/v1/notes/", note)
+        : await apiClient.patch("http://localhost:9000/api/v1/notes/" + note._id, note);
       const editedNote = response.data;
       if (editedNote._id) {
-        setNotes({...notes, [editedNote._id]: editedNote});
+        const updatedNotes = utils.addOrUpdateNote(editedNote, notes);
+        setNotes(updatedNotes);
         return true;
       }
       return false;
@@ -64,7 +65,7 @@ function EditableNote({
       // Save note and collapse component.
       const success = await saveOrUpdateNote();
       if (success) {
-        setNote(null);
+        setNote({});
         onOutsideClick();
       }
       // TODO: In else show error to the user.

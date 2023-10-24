@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useAuthContext } from "./contexts/AuthContext";
 import AuthHomePage from "./pages/AuthHomePage";
 import PublicHomePage from "./pages/PublicHomePage";

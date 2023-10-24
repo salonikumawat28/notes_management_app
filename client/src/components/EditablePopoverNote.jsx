@@ -2,7 +2,6 @@ import EditableNote from "./EditableNote";
 import "../css/EditablePopoverNote.css";
 
 function EditablePopoverNote({ note, onOutsideClick }) {
-  console.log("Editable popover note: ", note);
   return (
     <div>
       {/* onClick={onOutsideClick} */}

@@ -9,23 +9,13 @@ function SignUp() {
   const [newUser, setNewUser] = useState({ name: "", email: "", password: "" });
 
   async function signUpUser(event) {
-    event.preventDefault(); // Prevent the default form submission behavior
-    // const requestInfo = {
-    //     method: "POST",
-    //     headers: {
-    //         "Content-Type": "application/json"
-    //     },
-    //     body: JSON.stringify(newUser)
-    // };
+    event.preventDefault();
 
     try {
       const response = await apiClient.post(
-        "http://localhost:9000/auth/signup/",
+        "http://localhost:9000/api/v1/auth/signup/",
         newUser
       );
-      // const response = await fetch("http://localhost:9000/users/", requestInfo);
-      //   console.log("response daya is: ", response.data);
-      // const signedUpUser = await response.json();
       const authToken = response.data.authToken;
       if (authToken) {
         setAuthToken(authToken);

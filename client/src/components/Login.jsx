@@ -15,7 +15,7 @@ function Login() {
     event.preventDefault(); // Prevent the default form submission behavior
 
     try {
-      const response = await apiClient.post("http://localhost:9000/auth/login/", userCredentials);
+      const response = await apiClient.post("http://localhost:9000/api/v1/auth/login/", userCredentials);
       const authToken = response.data.authToken;
       if (authToken) {
         setAuthToken(authToken);

@@ -3,9 +3,8 @@ import EmptyNotesIndicator from "./EmptyNotesIndicator";
 import Note from "./Note";
 import "../css/NoteList.css";
 import { useNotesContext } from "../contexts/NotesContext";
-import {sort} from "../utils/utils";
 
-function NoteList({onNoteClick}) {
+function NoteList({ onNoteClick }) {
   const { notes } = useNotesContext();
 
   return (
@@ -13,7 +12,7 @@ function NoteList({onNoteClick}) {
       {notes.length === 0 ? (
         <EmptyNotesIndicator />
       ) : (
-        Object.values(sort(notes)).map((note) => (
+        Object.values(notes).map((note) => (
           <Note
             key={note._id}
             note={note}
