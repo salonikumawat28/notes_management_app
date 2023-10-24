@@ -88,7 +88,10 @@ We can communicate with the App by accessing FrontEnd via browser or Backend via
 Here are the API endpoints which are supported:
 <table>
 <tr>
-<td><b/>API</td><td><b/>Curl command </td> <td> <b/>Sample Success response </td> <td> <b/>Sample failure response </td>
+<th>API</th>
+<th>Curl command </th>
+<th>Sample Success response </th>
+<th>Sample failure response </th>
 </tr>
 <tr>
 <td>
