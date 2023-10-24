@@ -566,12 +566,67 @@ Here are the following ways user can communicate with the notes management app:
 5. In authenicated page, user can see the UI with all the notes of the user. When user click on any note, the note will open in extended mode as a popover. User can edit this opened note and it automatically gets saved when user clicks out of this UI.
 6. User can log out of the application by clicking on the Logout button in the header UI.
 
-# Important concepts
-## Authentication
-### Authentication in BackEnd
+# User Authentication
+## Backend
+### Signup - Passoword hashing and Token Creation
 
-### Authentication in FrontEnd
+<img src="https://github.com/salonikumawat28/notes_management_app/assets/72411385/aa918cc0-294d-4c76-aca5-fd481df18623" width="40%">
 
+During signup, we go through parts of the backend server like pre-processor, validator, controller etc. One of those part is service layer. In service layer, we do following:
+1. Check if the user with this email already exists. If yes, error out.
+2. Hash the password using bcrypt.
+3. Create the new user by calling mongoose models.
+4. Using the userId of the created user, create the JWT token.
+
+### Login - Password hash comparison and Token Creation
+
+<img src="https://github.com/salonikumawat28/notes_management_app/assets/72411385/721e06e8-fc72-4d20-a031-46cacc7d3d9a" width="40%">
+
+During login, we do following in service layer:
+1. Get the user for the given email from databaseusing mongoose models.
+2. Compare the login password with the database stored password hash using bcrypt.
+3. If password matches, create the JWT token using userId.
+
+### Authenticate API request - Token verification
+
+<img src="https://github.com/salonikumawat28/notes_management_app/assets/72411385/3c2fe9ce-8005-4da8-ada8-7e1d34e1767a" width="40%">
+
+When user hits a URL which requires authentication, then the authenticator middleware does following:
+1. Checks if the `request.headers` has `authorization` value set or not.
+2. If set, check if the `authorization` is a Bearer token.
+3. Validate the passed `authorization` JWT token. If user passes a different token, it will never get decoded.
+4. Decode the JWT token to get the user id.
+5. Set the user id as `request.authenticatedUserId` so that it can be used by controller.
+
+### Long lived access token vs Short lived - Trade offs
+TODO
+
+# Code structuring
+```
+Notes Mangement App
+|-- client
+|   |-- public
+|   |-- src
+|   |   |-- components
+|   |   |-- contexts
+|   |   |-- css
+|   |   |-- pages
+|   |   |-- utils
+|   |-- package.json
+|-- server
+|   |-- configs
+|   |-- controllers
+|   |-- db
+|   |-- errors
+|   |-- middlewares
+|   |-- models
+|   |-- routes
+|   |-- services
+|   |-- tests
+|   |-- utils
+```
+
+<!--
 # Rough
 # Creating quickstart projects
 
@@ -595,14 +650,6 @@ npm install
 
 ## Server API
 
-### API Router
-
-URL router contains simple URLs and routes them to appropriate controller methods.
-For example:
-
-```
-router.post('/', usersController.createUser);
-```
 # Important Concepts
 
 ## How to make API call from frontend
@@ -745,12 +792,6 @@ db.getDbConnection().on('connected', () => {
 });
 ```
 
-## Start performing CRUD operations
-
-### CRUD operations
-
-Model layer will be responsible to define methods to perform CRUD operations. In our model layer, we are using mongoose model for basic CRUD operations. Mongoose model will also create the collection automatically if its not already presented in the database.
-
 ## Database terminology
 
 1. Collection - Table is called Collection in MongoDB
@@ -764,45 +805,8 @@ Model layer will be responsible to define methods to perform CRUD operations. In
 4. Add in readme that why we are doing window onevetnlistener on storage.
 5. Add doc that we are using long lived access tokens and not short lived + refresh token concept.
 
-# Folder structure
-```
-Notes Mangement App
-|-- client
-|   |-- public
-|   |-- src
-|   |   |-- components
-|   |   |-- contexts
-|   |   |-- css
-|   |   |-- pages
-|   |   |-- utils
-|   |-- package-lock.json
-|   |-- package.json
-|-- server
-|   |-- configs
-|   |-- controllers
-|   |-- db
-|   |-- errors
-|   |-- middlewares
-|   |-- models
-|   |-- routes
-|   |-- services
-|   |-- tests
-|   |-- utils
-|-- other project files and folders
-```
+-->
 
-
-# Server side - Creating access token
-
-![mermaid-diagram-2023-10-23-151125](https://github.com/salonikumawat28/notes_management_app/assets/72411385/721e06e8-fc72-4d20-a031-46cacc7d3d9a)
-
-# Server side - Authenticate user flow
-
-![mermaid-diagram-2023-10-23-150404](https://github.com/salonikumawat28/notes_management_app/assets/72411385/3c2fe9ce-8005-4da8-ada8-7e1d34e1767a)
-
-# Server Side - login flow
-
-![mermaid-diagram-2023-10-23-150733](https://github.com/salonikumawat28/notes_management_app/assets/72411385/cc08d1f3-4221-4642-8050-8f81a6127525)
 
 <!--  
 flowchart TB
