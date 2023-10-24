@@ -1,10 +1,14 @@
 import { useAuthContext } from "../contexts/AuthContext";
 import "../css/Login.css";
 import apiClient from "../apiClient";
-import { Link } from 'react-router-dom';
+import { NavLink } from "react-router-dom";
 import config from "../configs/config";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import React from "react";
+import { useFormik } from "formik";
 import * as Yup from "yup";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import Container from "@material-ui/core/Container";
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -25,9 +29,18 @@ const initialValues = {
 function Login() {
   const { setAuthToken } = useAuthContext();
 
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: { login },
+  });
+
   async function login(userCredentials) {
     try {
-      const response = await apiClient.post(config.BACKEND_URL + "api/v1/auth/login/", userCredentials);
+      const response = await apiClient.post(
+        config.BACKEND_URL + "api/v1/auth/login/",
+        userCredentials
+      );
       const authToken = response.data.authToken;
       if (authToken) {
         setAuthToken(authToken);
@@ -36,34 +49,48 @@ function Login() {
       console.log("Error is: ", JSON.stringify(error));
     }
   }
-  
+
   return (
-    <div className="login">
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={login}
-      >
-        <Form>
-          <div>
-            <label htmlFor="email"> Email: </label>
-            <Field type="email" id="email" name="email" />
-            <ErrorMessage name="email" component="div" className="error" />
-          </div>
-          <div>
-            <label htmlFor="password"> Password: </label>
-            <Field type="password" id="password" name="password" />
-            <ErrorMessage name="password" component="div" className="error" />
-          </div>
-          <div className="Link">
-            <Link to="/signup">Create an account.</Link>
-          </div>
-          <div>
-            <button type="submit">Login</button>
-          </div>
-        </Form>
-      </Formik>
-    </div>
+    <Container maxWidth="xs">
+      <form onSubmit={formik.handleSubmit} noValidate>
+        <TextField
+          fullWidth
+          id="email"
+          name="email"
+          label="Email"
+          type="email"
+          value={formik.values.email}
+          onChange={formik.handleChange}
+          error={formik.touched.email && Boolean(formik.errors.email)}
+          helperText={formik.touched.email && formik.errors.email}
+          margin="normal"
+        />
+        <TextField
+          fullWidth
+          id="password"
+          name="password"
+          label="Password"
+          type="password"
+          value={formik.values.password}
+          onChange={formik.handleChange}
+          error={formik.touched.password && Boolean(formik.errors.password)}
+          helperText={formik.touched.password && formik.errors.password}
+          margin="normal"
+        />
+        <div className="Link">
+          <NavLink to="/signup">Create an account.</NavLink>
+        </div>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          style={{ marginTop: "16px" }}
+        >
+          Login
+        </Button>
+      </form>
+    </Container>
   );
 }
 

@@ -3,8 +3,8 @@
 }
 
 .Box {
-    background-image: url('https://cdn.pixabay.com/photo/2018/11/17/07/10/notebook-3820634_1280.jpg');
-    background-image: blur 30%;
+    /* background-image: url('https://cdn.pixabay.com/photo/2018/11/17/07/10/notebook-3820634_1280.jpg');
+    background-image: blur 30%; */
     background-size: cover;
     background-position: center; /* Center the background image */
     background-repeat: no-repeat;
