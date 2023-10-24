@@ -3,6 +3,7 @@ import "../css/SignUp.css";
 import apiClient from "../apiClient";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
+import config from "../configs/config";
 
 function SignUp() {
   const { setAuthToken } = useAuthContext();
@@ -13,7 +14,7 @@ function SignUp() {
 
     try {
       const response = await apiClient.post(
-        "http://localhost:9000/api/v1/auth/signup/",
+        config.BACKEND_URL + "api/v1/auth/signup/",
         newUser
       );
       const authToken = response.data.authToken;

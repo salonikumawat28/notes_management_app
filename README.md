@@ -3,8 +3,546 @@
 Notes Management App is a one stop solution to create, update and view your notes at one place.
 
 # Live links
-FrontEnd: https://notes-management-app-client-bcgoqllgv-saloni-kumawats-projects.vercel.app/
-BackEnd: 
+## FrontEnd: 
+FRONTEND_PROD_URL: https://notes-management-app-client-bcgoqllgv-saloni-kumawats-projects.vercel.app/
+
+FRONTEND_DEV_URL: http://localhost:3000/
+
+## BackEnd: 
+BACKEND_PROD_URL:
+https://notes-management-app-server-d246095aa0a9.herokuapp.com/
+
+BACKEND_DEV_URL: http://localhost:9000/
+
+# App Usage
+We can communicate with the App by accessing FrontEnd via browser or Backend via CURL commands.
+## BackEnd Server
+Here are the API endpoints which are supported:
+<table>
+<tr>
+<td><b/>API</td><td><b/>Curl command </td> <td> <b/>Sample Success response </td> <td> <b/>Sample failure response </td>
+</tr>
+<tr>
+<td>
+Signup:
+</td>
+<td>
+
+```
+curl -X POST BACKEND_DEV_URLapi/v1/auth/signup -H 'Content-Type: application/json' -d '{"name": "First Last", "email": "test4@test.com", "password": "Test@1234"}'
+```
+
+</td>
+<td>
+    
+```json
+{
+  "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTM2ODYyZGVmMmVhY2VmM2FjOWExYjIiLCJpYXQiOjE2OTgwNzIxMDl9.FstnAA-lm2LYWnHcPfHyfEamFuVKXLPq6T7kc7dtIoY"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "ValidationError",
+    "message": "Validation failed",
+    "fieldErrors": [
+      {
+        "field": "name",
+        "message": "Name must contain only letters and spaces"
+      },
+      {
+        "field": "password",
+        "message": "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character"
+      }
+    ],
+    "globalErrors": []
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+Login
+</td>
+<td>
+
+```
+curl -X POST BACKEND_DEV_URLapi/v1/auth/login -H 'Content-Type: application/json' -d '{"email": "test4@test.com", "password": "Test@1234"}'
+```
+
+</td>
+<td>
+    
+```json
+{
+  "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTM2ODYyZGVmMmVhY2VmM2FjOWExYjIiLCJpYXQiOjE2OTgwNzIxMDl9.FstnAA-lm2LYWnHcPfHyfEamFuVKXLPq6T7kc7dtIoY"
+}
+```
+
+</td>
+<td>
+
+Example 1:
+
+```json
+{
+  "error": {
+    "name": "UnauthorizedError",
+    "message": "Invalid credentials."
+  }
+}
+```
+
+Example 2:
+
+```json
+{
+  "error": {
+    "name": "ValidationError",
+    "message": "Validation failed",
+    "fieldErrors": [
+      {
+        "field": "email",
+        "message": "Email must be a valid email address"
+      }
+    ],
+    "globalErrors": []
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+Get a User
+</td>
+<td>
+
+```
+curl -X GET BACKEND_DEV_URLapi/v1/users/me -H "Authorization: Bearer $TOKEN"
+```
+
+</td>
+<td>
+    
+```json
+{
+  "_id": "6536862def2eacef3ac9a1b2",
+  "name": "First Last",
+  "email": "test4@test.com"
+} 
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "NotFoundError",
+    "message": "User not found."
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+Update partial information of user
+</td>
+<td>
+
+```
+curl -X PATCH BACKEND_DEV_URLapi/v1/users/me -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"bla": "updatedFirst Last"}'
+```
+
+</td>
+<td>
+    
+```json
+{
+  "_id": "6536862def2eacef3ac9a1b2",
+  "name": "updatedFirst Last",
+  "email": "test4@test.com"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "ValidationError",
+    "message": "Validation failed",
+    "fieldErrors": [
+      {
+        "field": "name",
+        "message": "Name must contain only letters and spaces"
+      }
+    ],
+    "globalErrors": []
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+Update password of user
+</td>
+<td>
+
+```
+curl -X PATCH BACKEND_DEV_URLapi/v1/users/me/password -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"password": "Test@1235"}'
+```
+
+</td>
+<td>
+    
+```json
+{
+  "message": "Password updated successfully"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "ValidationError",
+    "message": "Validation failed",
+    "fieldErrors": [
+      {
+        "field": "password",
+        "message": "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character"
+      }
+    ],
+    "globalErrors": []
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+Delete a user
+</td>
+<td>
+
+```
+curl -X DELETE BACKEND_DEV_URLapi/v1/users/me -H "Authorization: Bearer $TOKEN"
+```
+
+</td>
+<td>
+    
+```json
+{
+  "message": "User and associated notes deleted successfully"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "UnauthorizedError",
+    "message": "No token provided"
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+Create a new note
+</td>
+<td>
+
+```
+curl -X POST BACKEND_DEV_URLapi/v1/notes -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Test 2 Title 2", "content": "Test 2 content 2"}'
+```
+
+</td>
+<td>
+    
+```json
+{
+  "_id": "6536913d50415d6fc5e6b488",
+  "title": "Test 2 Title 1",
+  "content": "Test 2 content 1",
+  "_createdAt": "2023-10-23T15:29:01.318Z",
+  "_updatedAt": "2023-10-23T15:29:01.318Z"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "ValidationError",
+    "message": "Validation failed",
+    "fieldErrors": [],
+    "globalErrors": ["\"value\" must contain at least one of [title, content]"]
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+Update partial information of a note
+</td>
+<td>
+
+```
+curl -X PATCH BACKEND_DEV_URLapi/v1/notes/$NOTE_ID -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Updated Test 2 Title 1"}'
+```
+
+</td>
+<td>
+    
+```json
+{
+  "_id": "6536913d50415d6fc5e6b488",
+  "title": "Updated Test 2 Title 1",
+  "content": "Test 2 content 1",
+  "_updatedAt": "2023-10-23T15:33:13.513Z",
+  "_createdAt": "2023-10-23T15:29:01.318Z"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "ValidationError",
+    "message": "Validation failed",
+    "fieldErrors": [],
+    "globalErrors": ["\"value\" must contain at least one of [title, content]"]
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+Get a particular note
+</td>
+<td>
+
+```
+curl -X GET BACKEND_DEV_URLapi/v1/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
+```
+
+</td>
+<td>
+    
+```json
+{
+  "_id": "6536913d50415d6fc5e6b488",
+  "title": "Updated Test 2 Title 1",
+  "content": "Test 2 content 1",
+  "_updatedAt": "2023-10-23T15:33:13.513Z",
+  "_createdAt": "2023-10-23T15:29:01.318Z"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "NotFoundError",
+    "message": "Note not found."
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+Get all notes
+</td>
+<td>
+
+```
+curl -X GET BACKEND_DEV_URLapi/v1/notes -H "Authorization: Bearer $TOKEN"
+```
+
+</td>
+<td>
+    
+```json
+[
+  {
+    "_id": "6536913d50415d6fc5e6b488",
+    "title": "Updated Test 2 Title 1",
+    "content": "Test 2 content 1",
+    "_updatedAt": "2023-10-23T15:33:13.513Z",
+    "_createdAt": "2023-10-23T15:29:01.318Z"
+  },
+  {
+    "_id": "6536918950415d6fc5e6b48a",
+    "title": "Test 2 Title 2",
+    "_updatedAt": "2023-10-23T15:30:17.412Z",
+    "_createdAt": "2023-10-23T15:30:17.412Z"
+  },
+  {
+    "_id": "653691f850415d6fc5e6b48c",
+    "title": "Test 2 Title 2",
+    "content": "Test 2 content 2",
+    "_updatedAt": "2023-10-23T15:32:08.517Z",
+    "_createdAt": "2023-10-23T15:32:08.517Z"
+  }
+]
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "UnauthorizedError",
+    "message": "No token provided"
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+Search notes by text
+</td>
+<td>
+
+```
+curl -X GET "BACKEND_DEV_URLapi/v1/notes?search=bla" -H "Authorization: Bearer $TOKEN"
+```
+
+</td>
+<td>
+    
+```json
+[
+  {
+    "_id": "6536bc3dcdcb67dd1666f244",
+    "title": "Test 2 bla Title 1",
+    "content": "Test 2 bla content 1",
+    "_updatedAt": "2023-10-23T18:32:29.600Z",
+    "_createdAt": "2023-10-23T18:32:29.600Z"
+  },
+  {
+    "_id": "6536bc44cdcb67dd1666f246",
+    "title": "Test 2 Title 1",
+    "content": "Test 2 bla content 1",
+    "_updatedAt": "2023-10-23T18:32:36.370Z",
+    "_createdAt": "2023-10-23T18:32:36.370Z"
+  },
+  {
+    "_id": "6536bc2ccdcb67dd1666f240",
+    "title": "Test 2 bla Title 1",
+    "content": "Test 2 content 1",
+    "_updatedAt": "2023-10-23T18:32:12.990Z",
+    "_createdAt": "2023-10-23T18:32:12.990Z"
+  }
+]
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "UnauthorizedError",
+    "message": "No token provided"
+  }
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+Delete a note
+</td>
+<td>
+
+```
+curl -X DELETE BACKEND_DEV_URLapi/v1/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
+```
+
+</td>
+<td>
+    
+```json
+{
+  "message": "Note deleted successfully"
+}
+```
+
+</td>
+<td>
+
+```json
+{
+  "error": {
+    "name": "CastError",
+    "message": "Cast to ObjectId failed for value \"1126$\" (type string) at path \"_id\" for model \"Notes\""
+  }
+}
+```
+
+</td>
+</tr>
+</table>
+
+## FrontEnd Server
+Here are the following ways user can communicate with the notes management app:
+1. If user is not authenticated, user can go to signup page at FRONTEND_DEV_URLsignup, and to login page at FRONTEND_DEV_URLlogin.
+2. User can submit signup form to create account and submit login form to log into the account.
+3. If user is authenticated, user will see the authenticated home page irrespective of the URL.
+4. In authenticated page, user can see the UI to create a new note. If user clicks on it, the UI will expand and user can add title and content of the note. When user moves out of the create new note UI, the note is automatically saved.
+5. In authenicated page, user can see the UI with all the notes of the user. When user click on any note, the note will open in extended mode as a popover. User can edit this opened note and it automatically gets saved when user clicks out of this UI.
+6. User can log out of the application by clicking on the Logout button in the header UI.
 
 # Design and Architecture
 ## Backend
@@ -116,536 +654,41 @@ To overrite the deployment, run:
 vercel --prod
 ```
 ## Deploy backend
+Heroku deployment relies on `heroku.yml` file and a root level `package.json` file so we have created one in the root level as a wrapper to the package.json in server folder.
 
-# App Usage
-We can communicate with the App by accessing FrontEnd via browser or Backend via CURL commands.
-## BackEnd Server
-Here are the API endpoints which are supported:
-<table>
-<tr>
-<td><b/>API</td><td><b/>Curl command </td> <td> <b/>Sample Success response </td> <td> <b/>Sample failure response </td>
-</tr>
-<tr>
-<td>
-Signup:
-</td>
-<td>
-
+First time deploy:
 ```
-curl -X POST http://localhost:9000/api/v1/auth/signup -H 'Content-Type: application/json' -d '{"name": "First Last", "email": "test4@test.com", "password": "Test@1234"}'
+Create heroku account
+Install heroku CLI
+
+In commandline:
+cd server
+heroku login
+heroku create notes-management-app-server
 ```
 
-</td>
-<td>
-    
-```json
-{
-  "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTM2ODYyZGVmMmVhY2VmM2FjOWExYjIiLCJpYXQiOjE2OTgwNzIxMDl9.FstnAA-lm2LYWnHcPfHyfEamFuVKXLPq6T7kc7dtIoY"
-}
+These step should give the github repo link on heroku 
+```
+Creating ⬢ notes-management-app-server... done
+https://notes-management-app-server-d246095aa0a9.herokuapp.com/ | https://git.heroku.com/notes-management-app-server.git
 ```
 
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "ValidationError",
-    "message": "Validation failed",
-    "fieldErrors": [
-      {
-        "field": "name",
-        "message": "Name must contain only letters and spaces"
-      },
-      {
-        "field": "password",
-        "message": "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character"
-      }
-    ],
-    "globalErrors": []
-  }
-}
+Add this repo:
+```
+git remote add heroku https://git.heroku.com/notes-management-app-server.git
+git push heroku main
 ```
 
-</td>
-</tr>
-
-<tr>
-<td>
-Login
-</td>
-<td>
-
+As response, you should get the app link where it got deployed:
 ```
-curl -X POST http://localhost:9000/api/v1/auth/login -H 'Content-Type: application/json' -d '{"email": "test4@test.com", "password": "Test@1234"}'
+https://notes-management-app-server-d246095aa0a9.herokuapp.com/
 ```
 
-</td>
-<td>
-    
-```json
-{
-  "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTM2ODYyZGVmMmVhY2VmM2FjOWExYjIiLCJpYXQiOjE2OTgwNzIxMDl9.FstnAA-lm2LYWnHcPfHyfEamFuVKXLPq6T7kc7dtIoY"
-}
+To overrite the deployment, simply run:
+```
+git push heroku main
 ```
 
-</td>
-<td>
-
-Example 1:
-
-```json
-{
-  "error": {
-    "name": "UnauthorizedError",
-    "message": "Invalid credentials."
-  }
-}
-```
-
-Example 2:
-
-```json
-{
-  "error": {
-    "name": "ValidationError",
-    "message": "Validation failed",
-    "fieldErrors": [
-      {
-        "field": "email",
-        "message": "Email must be a valid email address"
-      }
-    ],
-    "globalErrors": []
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-Get a User
-</td>
-<td>
-
-```
-curl -X GET http://localhost:9000/api/v1/users/me -H "Authorization: Bearer $TOKEN"
-```
-
-</td>
-<td>
-    
-```json
-{
-  "_id": "6536862def2eacef3ac9a1b2",
-  "name": "First Last",
-  "email": "test4@test.com"
-} 
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "NotFoundError",
-    "message": "User not found."
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-Update partial information of user
-</td>
-<td>
-
-```
-curl -X PATCH http://localhost:9000/api/v1/users/me -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"bla": "updatedFirst Last"}'
-```
-
-</td>
-<td>
-    
-```json
-{
-  "_id": "6536862def2eacef3ac9a1b2",
-  "name": "updatedFirst Last",
-  "email": "test4@test.com"
-}
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "ValidationError",
-    "message": "Validation failed",
-    "fieldErrors": [
-      {
-        "field": "name",
-        "message": "Name must contain only letters and spaces"
-      }
-    ],
-    "globalErrors": []
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-Update password of user
-</td>
-<td>
-
-```
-curl -X PATCH http://localhost:9000/api/v1/users/me/password -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"password": "Test@1235"}'
-```
-
-</td>
-<td>
-    
-```json
-{
-  "message": "Password updated successfully"
-}
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "ValidationError",
-    "message": "Validation failed",
-    "fieldErrors": [
-      {
-        "field": "password",
-        "message": "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character"
-      }
-    ],
-    "globalErrors": []
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-Delete a user
-</td>
-<td>
-
-```
-curl -X DELETE http://localhost:9000/api/v1/users/me -H "Authorization: Bearer $TOKEN"
-```
-
-</td>
-<td>
-    
-```json
-{
-  "message": "User and associated notes deleted successfully"
-}
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "UnauthorizedError",
-    "message": "No token provided"
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-Create a new note
-</td>
-<td>
-
-```
-curl -X POST http://localhost:9000/api/v1/notes -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Test 2 Title 2", "content": "Test 2 content 2"}'
-```
-
-</td>
-<td>
-    
-```json
-{
-  "_id": "6536913d50415d6fc5e6b488",
-  "title": "Test 2 Title 1",
-  "content": "Test 2 content 1",
-  "_createdAt": "2023-10-23T15:29:01.318Z",
-  "_updatedAt": "2023-10-23T15:29:01.318Z"
-}
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "ValidationError",
-    "message": "Validation failed",
-    "fieldErrors": [],
-    "globalErrors": ["\"value\" must contain at least one of [title, content]"]
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-Update partial information of a note
-</td>
-<td>
-
-```
-curl -X PATCH http://localhost:9000/api/v1/notes/$NOTE_ID -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Updated Test 2 Title 1"}'
-```
-
-</td>
-<td>
-    
-```json
-{
-  "_id": "6536913d50415d6fc5e6b488",
-  "title": "Updated Test 2 Title 1",
-  "content": "Test 2 content 1",
-  "_updatedAt": "2023-10-23T15:33:13.513Z",
-  "_createdAt": "2023-10-23T15:29:01.318Z"
-}
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "ValidationError",
-    "message": "Validation failed",
-    "fieldErrors": [],
-    "globalErrors": ["\"value\" must contain at least one of [title, content]"]
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-Get a particular note
-</td>
-<td>
-
-```
-curl -X GET http://localhost:9000/api/v1/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
-```
-
-</td>
-<td>
-    
-```json
-{
-  "_id": "6536913d50415d6fc5e6b488",
-  "title": "Updated Test 2 Title 1",
-  "content": "Test 2 content 1",
-  "_updatedAt": "2023-10-23T15:33:13.513Z",
-  "_createdAt": "2023-10-23T15:29:01.318Z"
-}
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "NotFoundError",
-    "message": "Note not found."
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-Get all notes
-</td>
-<td>
-
-```
-curl -X GET http://localhost:9000/api/v1/notes -H "Authorization: Bearer $TOKEN"
-```
-
-</td>
-<td>
-    
-```json
-[
-  {
-    "_id": "6536913d50415d6fc5e6b488",
-    "title": "Updated Test 2 Title 1",
-    "content": "Test 2 content 1",
-    "_updatedAt": "2023-10-23T15:33:13.513Z",
-    "_createdAt": "2023-10-23T15:29:01.318Z"
-  },
-  {
-    "_id": "6536918950415d6fc5e6b48a",
-    "title": "Test 2 Title 2",
-    "_updatedAt": "2023-10-23T15:30:17.412Z",
-    "_createdAt": "2023-10-23T15:30:17.412Z"
-  },
-  {
-    "_id": "653691f850415d6fc5e6b48c",
-    "title": "Test 2 Title 2",
-    "content": "Test 2 content 2",
-    "_updatedAt": "2023-10-23T15:32:08.517Z",
-    "_createdAt": "2023-10-23T15:32:08.517Z"
-  }
-]
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "UnauthorizedError",
-    "message": "No token provided"
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-Search notes by text
-</td>
-<td>
-
-```
-curl -X GET "http://localhost:9000/api/v1/notes?search=bla" -H "Authorization: Bearer $TOKEN"
-```
-
-</td>
-<td>
-    
-```json
-[
-  {
-    "_id": "6536bc3dcdcb67dd1666f244",
-    "title": "Test 2 bla Title 1",
-    "content": "Test 2 bla content 1",
-    "_updatedAt": "2023-10-23T18:32:29.600Z",
-    "_createdAt": "2023-10-23T18:32:29.600Z"
-  },
-  {
-    "_id": "6536bc44cdcb67dd1666f246",
-    "title": "Test 2 Title 1",
-    "content": "Test 2 bla content 1",
-    "_updatedAt": "2023-10-23T18:32:36.370Z",
-    "_createdAt": "2023-10-23T18:32:36.370Z"
-  },
-  {
-    "_id": "6536bc2ccdcb67dd1666f240",
-    "title": "Test 2 bla Title 1",
-    "content": "Test 2 content 1",
-    "_updatedAt": "2023-10-23T18:32:12.990Z",
-    "_createdAt": "2023-10-23T18:32:12.990Z"
-  }
-]
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "UnauthorizedError",
-    "message": "No token provided"
-  }
-}
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-Delete a note
-</td>
-<td>
-
-```
-curl -X DELETE http://localhost:9000/api/v1/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
-```
-
-</td>
-<td>
-    
-```json
-{
-  "message": "Note deleted successfully"
-}
-```
-
-</td>
-<td>
-
-```json
-{
-  "error": {
-    "name": "CastError",
-    "message": "Cast to ObjectId failed for value \"1126$\" (type string) at path \"_id\" for model \"Notes\""
-  }
-}
-```
-
-</td>
-</tr>
-</table>
-
-## FrontEnd Server
-Here are the following ways user can communicate with the notes management app:
-1. If user is not authenticated, user can go to signup page at http://localhost:3000/signup, and to login page at http://localhost:3000/login.
-2. User can submit signup form to create account and submit login form to log into the account.
-3. If user is authenticated, user will see the authenticated home page irrespective of the URL.
-4. In authenticated page, user can see the UI to create a new note. If user clicks on it, the UI will expand and user can add title and content of the note. When user moves out of the create new note UI, the note is automatically saved.
-5. In authenicated page, user can see the UI with all the notes of the user. When user click on any note, the note will open in extended mode as a popover. User can edit this opened note and it automatically gets saved when user clicks out of this UI.
-6. User can log out of the application by clicking on the Logout button in the header UI.
 
 # User Authentication
 ## Backend

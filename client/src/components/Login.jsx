@@ -3,6 +3,7 @@ import { useAuthContext } from "../contexts/AuthContext";
 import "../css/Login.css";
 import apiClient from "../apiClient";
 import { Link } from 'react-router-dom';
+import config from "../configs/config";
 
 function Login() {
   const { setAuthToken } = useAuthContext();
@@ -15,7 +16,7 @@ function Login() {
     event.preventDefault(); // Prevent the default form submission behavior
 
     try {
-      const response = await apiClient.post("http://localhost:9000/api/v1/auth/login/", userCredentials);
+      const response = await apiClient.post(config.BACKEND_URL + "api/v1/auth/login/", userCredentials);
       const authToken = response.data.authToken;
       if (authToken) {
         setAuthToken(authToken);

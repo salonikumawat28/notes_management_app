@@ -3,6 +3,7 @@ import apiClient from "../apiClient";
 import "../css/EditableNote.css";
 import { useNotesContext } from "../contexts/NotesContext";
 import utils from "../utils/utils";
+import config from "../configs/config";
 
 function EditableNote({
   initialNote = {},
@@ -34,8 +35,8 @@ function EditableNote({
 
     async function saveOrUpdateNote() {
       const response = !note._id
-        ? await apiClient.post("http://localhost:9000/api/v1/notes/", note)
-        : await apiClient.patch("http://localhost:9000/api/v1/notes/" + note._id, note);
+        ? await apiClient.post(config.BACKEND_URL + "api/v1/notes/", note)
+        : await apiClient.patch(config.BACKEND_URL + "api/v1/notes/" + note._id, note);
       const editedNote = response.data;
       if (editedNote._id) {
         const updatedNotes = utils.addOrUpdateNote(editedNote, notes);
