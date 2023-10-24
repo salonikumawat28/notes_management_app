@@ -89,7 +89,6 @@ npm start
 ```
 Server can be accessed at `http://localhost:9000`
 
-**Note**: Backend server currenty connects to database which needs whitelisting of specific URL. So either change the dartabase URL to your instance in `server/configs/config.js` OR ask @salonikumawat28 to whitelist your IP address.
 # App Usage
 We can communicate with the App by accessing FrontEnd via browser or Backend via CURL commands.
 ## BackEnd Server
