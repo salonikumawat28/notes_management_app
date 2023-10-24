@@ -566,6 +566,12 @@ Here are the following ways user can communicate with the notes management app:
 5. In authenicated page, user can see the UI with all the notes of the user. When user click on any note, the note will open in extended mode as a popover. User can edit this opened note and it automatically gets saved when user clicks out of this UI.
 6. User can log out of the application by clicking on the Logout button in the header UI.
 
+# Important concepts
+## Authentication
+### Authentication in BackEnd
+
+### Authentication in FrontEnd
+
 # Rough
 # Creating quickstart projects
 
@@ -597,113 +603,9 @@ For example:
 ```
 router.post('/', usersController.createUser);
 ```
-
-### API Controller
-
-Controller of an API involves a series of well-defined steps. Here's a breakdown of the generic steps involved in an API controller:
-
-1. Validation:
-
-- Input Validation: Validate the request, including URL parameters, query parameters, and the request body to ensure the input data meets the expected format.
-- Error Handling: If validation fails, send error message with error status code.
-
-2. Authentication:
-
-- Authenticate the user: If the API requires authentication, verify the provided credentials.
-- Authorize the user: Authorize the authenticated user to ensure that the user has access to the corresponding resource.
-- Authentication/Authorization error handling - If failsm send error message with error status code
-
-3. Data transformation for Database: Transform the valdiated input data to a format which is comptabile with the database.
-
-4. Call Model layer to perform CRUD operations
-
-5. Light-weight Data transformation for API response: Transform the database response to a format which is compatible with the API response.
-
-6. Handle successful response: If API response is successful one, return with success code.
-
-7. Handle failed response: If there were any errors while fetching API response or if the response itself is the failed one, send error response with proper message and response code.
-
-### API Model layer
-
-Model layer of an API does following:
-
-1. Perform (multiple) database CRUD operations.
-2. Process the data: Process the data from database so that we can compute the response which controller wants.
-
-# Server API
-
-Backend server API contains URLs via which clients can communicate with it. Few generic rules which we are following for server API are:
-
-- Content type for server API's request and response is JSON.
-
-Here are few APIs which server has:
-
-## Users API
-
-1. Get all users - URL: `/api/users`, HTTP method: GET, HTTP response: array of users
-2. Get a user - URL: `/api/users/:id`, HTTP method: GET, HTTP response: requested user
-3. Create a new user - URL: `/api/users`, HTTP method: POST, HTTP request: user to be created, HTTP response: created user
-4. Replace the entire user - URL: `/api/users/:id`, HTTP method: PUT, HTTP request: user to be replaced, HTTP response: replaced user
-5. Update the user - URL: `/api/users/:id`, HTTP method: PATCH, HTTP request: user to be updated, HTTP response: updated user
-6. Delete the user - URL: `/api/users/:id`, HTTP method: DELETE, HTTP response: deletion status
-
-## Notes API
-
-1. Get all notes - URL: `/api/notes`, HTTP method: GET, HTTP response: array of notes
-2. Get a note - URL: `/api/notes/:id`, HTTP method: GET, HTTP response: requested note
-3. Create a new note - URL: `/api/notes`, HTTP method: POST, HTTP request: note to be created, HTTP response: created note
-4. Replace the entire note - URL: `/api/notes/:id`, HTTP method: PUT, HTTP request: note to be replaced, HTTP response: replaced note
-5. Update the note - URL: `/api/notes/:id`, HTTP method: PATCH, HTTP request: note to be updated, HTTP response: updated note
-6. Delete the note - URL: `/api/notes/:id`, HTTP method: DELETE, HTTP response: deletion status
-
 # Important Concepts
 
-## How to make API fetch call from frontend
-
-1. GET All:
-
-```
-const response = await fetch("http://localhost:9000/api/notes/");
-const data = await response.json();
-```
-
-2. GET:
-
-```
-
-```
-
-2. POST:
-
-```
-const requestInfo = {
-    method: "POST",
-    headers: {
-        "content-type": "application/json"
-    },
-    body: JSON.stringify(note)
-};
-const response = await fetch("http://localhost:9000/api/notes/", requestInfo);
-const createdNote = await response.json();
-```
-
-3. PATCH:
-
-```
-
-```
-
-4. PUT:
-
-```
-
-```
-
-5. DELETE:
-
-```
-
-```
+## How to make API call from frontend
 
 ## How to change listening port in Express.js
 
@@ -720,430 +622,6 @@ It is the package manager for Node.js, and it is used to manage and install thir
 ## .gitignore
 
 There are lot of files which you don't want to part of git. Example: generated files, installed node modules etc. Such files can be added to .gitignore file and now these files will not be picked by git while commit, push etc.
-
-## Curl commands
-
-Below are samples of CURl commands for server API:
-
-## Auth API
-
-1. To signup:
-
-```
-curl -X POST http://localhost:9000/api/auth/signup -H 'Content-Type: application/json' -d '{"name": "First Last", "email": "test5@test.com", "password": "Test@1234"}'
-```
-
-Success response:
-
-```
-{
-  "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTM2ODYyZGVmMmVhY2VmM2FjOWExYjIiLCJpYXQiOjE2OTgwNzIxMDl9.FstnAA-lm2LYWnHcPfHyfEamFuVKXLPq6T7kc7dtIoY"
-}
-```
-
-Failed response:
-
-```json
-{
-  "error": {
-    "name": "ValidationError",
-    "message": "Validation failed",
-    "fieldErrors": [
-      {
-        "field": "name",
-        "message": "Name must contain only letters and spaces"
-      },
-      {
-        "field": "password",
-        "message": "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character"
-      }
-    ],
-    "globalErrors": []
-  }
-}
-```
-
-2. To login:
-
-```
-curl -X POST http://localhost:9000/api/auth/login -H 'Content-Type: application/json' -d '{"email": "test4@test.com", "password": "Test@1234"}'
-```
-
-Success response:
-
-```json
-{
-  "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTM2ODYyZGVmMmVhY2VmM2FjOWExYjIiLCJpYXQiOjE2OTgwNzIxMDl9.FstnAA-lm2LYWnHcPfHyfEamFuVKXLPq6T7kc7dtIoY"
-}
-```
-
-Failed response:
-Example 1:
-
-```json
-{
-  "error": {
-    "name": "UnauthorizedError",
-    "message": "Invalid credentials."
-  }
-}
-```
-
-Example 2:
-
-```json
-{
-  "error": {
-    "name": "ValidationError",
-    "message": "Validation failed",
-    "fieldErrors": [
-      {
-        "field": "email",
-        "message": "Email must be a valid email address"
-      }
-    ],
-    "globalErrors": []
-  }
-}
-```
-
-### User API
-
-1. Set auth token in command line:
-
-```
-export TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTM2YmJmM2NkY2I2N2RkMTY2NmYyM2MiLCJpYXQiOjE2OTgwODU4NzV9.69b0UearOm4trk_Yet2xSK2zV_5WAN99DpOIipNBESg
-```
-
-2. To get a particular user
-
-```
-curl -X GET http://localhost:9000/api/users/me -H "Authorization: Bearer $TOKEN"
-```
-
-Success response:
-
-```json
-{
-  "_id": "6536862def2eacef3ac9a1b2",
-  "name": "First Last",
-  "email": "test4@test.com"
-}
-```
-
-Failed respinse:
-
-```json
-{
-  "error": {
-    "name": "NotFoundError",
-    "message": "User not found."
-  }
-}
-```
-
-3. To update partial information of the user
-
-```
-curl -X PATCH http://localhost:9000/api/users/me -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"bla": "updatedFirst Last"}'
-```
-
-Success response:
-
-```json
-{
-  "_id": "6536862def2eacef3ac9a1b2",
-  "name": "updatedFirst Last",
-  "email": "test4@test.com"
-}
-```
-
-Failed response:
-
-```json
-{
-  "error": {
-    "name": "ValidationError",
-    "message": "Validation failed",
-    "fieldErrors": [
-      {
-        "field": "name",
-        "message": "Name must contain only letters and spaces"
-      }
-    ],
-    "globalErrors": []
-  }
-}
-```
-
-5. To update password of the user
-
-```
-curl -X PATCH http://localhost:9000/api/users/me/password -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"password": "Test@1235"}'
-```
-
-Success response:
-
-```json
-{
-  "message": "Password updated successfully"
-}
-```
-
-Failed response:
-
-```json
-{
-  "error": {
-    "name": "ValidationError",
-    "message": "Validation failed",
-    "fieldErrors": [
-      {
-        "field": "password",
-        "message": "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character"
-      }
-    ],
-    "globalErrors": []
-  }
-}
-```
-
-6. To delete a user
-
-```
-curl -X DELETE http://localhost:9000/api/users/me -H "Authorization: Bearer $TOKEN"
-```
-
-Success response:
-
-```json
-{
-  "message": "User and associated notes deleted successfully"
-}
-```
-
-Failed response:
-
-```json
-{
-  "error": {
-    "name": "UnauthorizedError",
-    "message": "No token provided"
-  }
-}
-```
-
-## Notes API
-
-```
-1. To create a new note resource
-```
-
-curl -X POST http://localhost:9000/api/notes -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Test 2 Title 1", "content": "Test 2 content 1"}'
-
-export NOTE_ID=6536913d50415d6fc5e6b488
-
-````
-Success response:
-```json
-{
-  "_id": "6536913d50415d6fc5e6b488",
-  "title": "Test 2 Title 1",
-  "content": "Test 2 content 1",
-  "_createdAt": "2023-10-23T15:29:01.318Z",
-  "_updatedAt": "2023-10-23T15:29:01.318Z"
-}
-````
-
-Failed response:
-
-```json
-{
-  "error": {
-    "name": "ValidationError",
-    "message": "Validation failed",
-    "fieldErrors": [],
-    "globalErrors": ["\"value\" must contain at least one of [title, content]"]
-  }
-}
-```
-
-2. To update partial information of the note
-
-```
-curl -X PATCH http://localhost:9000/api/notes/$NOTE_ID -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"title": "Updated Test 2 Title 1"}'
-```
-
-Success response:
-
-```json
-{
-  "_id": "6536913d50415d6fc5e6b488",
-  "title": "Updated Test 2 Title 1",
-  "content": "Test 2 content 1",
-  "_updatedAt": "2023-10-23T15:33:13.513Z",
-  "_createdAt": "2023-10-23T15:29:01.318Z"
-}
-```
-
-Failed response:
-
-```json
-{
-  "error": {
-    "name": "ValidationError",
-    "message": "Validation failed",
-    "fieldErrors": [],
-    "globalErrors": ["\"value\" must contain at least one of [title, content]"]
-  }
-}
-```
-
-3. To get a particular note
-
-```
-curl -X GET http://localhost:9000/api/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
-```
-
-Success response:
-
-```json
-{
-  "_id": "6536913d50415d6fc5e6b488",
-  "title": "Updated Test 2 Title 1",
-  "content": "Test 2 content 1",
-  "_updatedAt": "2023-10-23T15:33:13.513Z",
-  "_createdAt": "2023-10-23T15:29:01.318Z"
-}
-```
-
-Failed response:
-
-```json
-{
-  "error": {
-    "name": "NotFoundError",
-    "message": "Note not found."
-  }
-}
-```
-
-4. To get all notes:
-
-```
-curl -X GET http://localhost:9000/api/notes -H "Authorization: Bearer $TOKEN"
-```
-
-Success response:
-
-```json
-[
-  {
-    "_id": "6536913d50415d6fc5e6b488",
-    "title": "Updated Test 2 Title 1",
-    "content": "Test 2 content 1",
-    "_updatedAt": "2023-10-23T15:33:13.513Z",
-    "_createdAt": "2023-10-23T15:29:01.318Z"
-  },
-  {
-    "_id": "6536918950415d6fc5e6b48a",
-    "title": "Test 2 Title 2",
-    "_updatedAt": "2023-10-23T15:30:17.412Z",
-    "_createdAt": "2023-10-23T15:30:17.412Z"
-  },
-  {
-    "_id": "653691f850415d6fc5e6b48c",
-    "title": "Test 2 Title 2",
-    "content": "Test 2 content 2",
-    "_updatedAt": "2023-10-23T15:32:08.517Z",
-    "_createdAt": "2023-10-23T15:32:08.517Z"
-  }
-]
-```
-
-Failed response:
-
-```
-{
-  "error": {
-    "name": "UnauthorizedError",
-    "message": "No token provided"
-  }
-}
-```
-
-4. To search notes containing given search query:
-
-```
-curl -X GET "http://localhost:9000/api/notes?search=bla" -H "Authorization: Bearer $TOKEN"
-```
-
-Success response:
-
-```json
-[
-  {
-    "_id": "6536bc3dcdcb67dd1666f244",
-    "title": "Test 2 bla Title 1",
-    "content": "Test 2 bla content 1",
-    "_updatedAt": "2023-10-23T18:32:29.600Z",
-    "_createdAt": "2023-10-23T18:32:29.600Z",
-    "score": 1.2
-  },
-  {
-    "_id": "6536bc44cdcb67dd1666f246",
-    "title": "Test 2 Title 1",
-    "content": "Test 2 bla content 1",
-    "_updatedAt": "2023-10-23T18:32:36.370Z",
-    "_createdAt": "2023-10-23T18:32:36.370Z",
-    "score": 0.6
-  },
-  {
-    "_id": "6536bc2ccdcb67dd1666f240",
-    "title": "Test 2 bla Title 1",
-    "content": "Test 2 content 1",
-    "_updatedAt": "2023-10-23T18:32:12.990Z",
-    "_createdAt": "2023-10-23T18:32:12.990Z",
-    "score": 0.6
-  }
-]
-```
-
-Failed response:
-
-```
-{
-  "error": {
-    "name": "UnauthorizedError",
-    "message": "No token provided"
-  }
-}
-```
-
-5. To delete a note
-
-```
-curl -X DELETE http://localhost:9000/api/notes/$NOTE_ID -H "Authorization: Bearer $TOKEN"
-```
-
-Success response:
-
-```json
-{
-  "message": "Note deleted successfully"
-}
-```
-
-Failed response:
-
-```json
-{
-  "error": {
-    "name": "CastError",
-    "message": "Cast to ObjectId failed for value \"1126$\" (type string) at path \"_id\" for model \"Notes\""
-  }
-}
-```
 
 ## Underscore Library
 
@@ -1171,7 +649,7 @@ For this, we have added event listener in useEffect of NotesManagementApp which 
 
 # React concepts
 
-## React component - sttributes and child elements
+## React component - attributes and child elements
 
 A custom React component can have attributes and child elements as well. Example:
 
@@ -1273,36 +751,6 @@ db.getDbConnection().on('connected', () => {
 
 Model layer will be responsible to define methods to perform CRUD operations. In our model layer, we are using mongoose model for basic CRUD operations. Mongoose model will also create the collection automatically if its not already presented in the database.
 
-### Auto increment
-
-To auto-increment a field in the collection, we are using `mongoose-sequence` library.
-
-### Example
-
-```
-const mongoose = require('mongoose');
-const AutoIncrementFactory = require('mongoose-sequence');
-
-const AutoIncrement = AutoIncrementFactory(mongoose);
-
-// Note: Setting _id to false so that mongoose doesn't auto create the _id.
-const userSchema = new mongoose.Schema({
-    firstName: String,
-    lastName: String
-  }, {_id: false});
-
-  // Note: Setting mongoose-sequence to auto increment the _id.
-userSchema.plugin(AutoIncrement, {inc_field: '_id'});
-
-const userModel = mongoose.model('User', userSchema);
-
-module.exports = userModel;
-```
-
-## Database scalability
-
-## Database indexing
-
 ## Database terminology
 
 1. Collection - Table is called Collection in MongoDB
@@ -1316,8 +764,45 @@ module.exports = userModel;
 4. Add in readme that why we are doing window onevetnlistener on storage.
 5. Add doc that we are using long lived access tokens and not short lived + refresh token concept.
 
-# Server Flow Diagram
+# Folder structure
+```
+Notes Mangement App
+|-- client
+|   |-- public
+|   |-- src
+|   |   |-- components
+|   |   |-- contexts
+|   |   |-- css
+|   |   |-- pages
+|   |   |-- utils
+|   |-- package-lock.json
+|   |-- package.json
+|-- server
+|   |-- configs
+|   |-- controllers
+|   |-- db
+|   |-- errors
+|   |-- middlewares
+|   |-- models
+|   |-- routes
+|   |-- services
+|   |-- tests
+|   |-- utils
+|-- other project files and folders
+```
 
+
+# Server side - Creating access token
+
+![mermaid-diagram-2023-10-23-151125](https://github.com/salonikumawat28/notes_management_app/assets/72411385/721e06e8-fc72-4d20-a031-46cacc7d3d9a)
+
+# Server side - Authenticate user flow
+
+![mermaid-diagram-2023-10-23-150404](https://github.com/salonikumawat28/notes_management_app/assets/72411385/3c2fe9ce-8005-4da8-ada8-7e1d34e1767a)
+
+# Server Side - login flow
+
+![mermaid-diagram-2023-10-23-150733](https://github.com/salonikumawat28/notes_management_app/assets/72411385/cc08d1f3-4221-4642-8050-8f81a6127525)
 
 <!--  
 flowchart TB
@@ -1358,13 +843,6 @@ Model --\> |14. returns data| Service
 Service --\> |15. returns data| Controller
 Controller --\> |16. send response with data| ExpressApp 
 
--->
-
-# Server side - Creating access token
-
-![mermaid-diagram-2023-10-23-151125](https://github.com/salonikumawat28/notes_management_app/assets/72411385/721e06e8-fc72-4d20-a031-46cacc7d3d9a)
-
-<!--
 flowchart TB
 subgraph Controller
     Co(Auth Controller)
@@ -1383,13 +861,8 @@ Controller <--\> Auth-service
 Auth-service <--\> Mongoose-Model
 E --\> H
 H --\> J
--->
 
-# Server side - Authenticate user flow
 
-![mermaid-diagram-2023-10-23-150404](https://github.com/salonikumawat28/notes_management_app/assets/72411385/3c2fe9ce-8005-4da8-ada8-7e1d34e1767a)
-
-<!--
 flowchart TB
 subgraph Request-Validator
     Re(Request Validator)
@@ -1412,13 +885,8 @@ CheckReqHeader --\> CheckToken
 CheckToken --\> JWT
 JWT --\> Decode
 Decode --\> SetUserId
--->
 
-# Server Side - login flow
 
-![mermaid-diagram-2023-10-23-150733](https://github.com/salonikumawat28/notes_management_app/assets/72411385/cc08d1f3-4221-4642-8050-8f81a6127525)
-
-<!--
 flowchart TB
 subgraph Controller
     Co(Auth Controller)
@@ -1437,15 +905,8 @@ Controller <--\> Auth-service
 Auth-service <--\> Mongoose-Model
 E --\> H
 H --\> J
--->
-
-# Mongo Db Database Schema
 
 
-# Frontent Flow Diagram
-
-
-<!--
 flowchart TB
 Index[index.js]
 App[App Component]
@@ -1485,9 +946,6 @@ NoteManager --\> NUpdate
 style Context fill:#ffffcc
 style NContect fill:#ffffcc
   
--->
-
-<!--
 ```mermaid
 sequenceDiagram
     actor Client
@@ -1526,48 +984,3 @@ sequenceDiagram
     R ->> Chrome: access token
 ```
 -->
-
-# Folder structure
-```
-Notes Mangement App
-|-- client
-|   |-- public
-|   |-- src
-|   |   |-- components
-|   |   |-- contexts
-|   |   |-- css
-|   |   |-- pages
-|   |   |-- utils
-|   |-- package-lock.json
-|   |-- package.json
-|-- server
-|   |-- configs
-|   |-- controllers
-|   |-- db
-|   |-- errors
-|   |-- middlewares
-|   |-- models
-|   |-- routes
-|   |-- services
-|   |-- tests
-|   |-- utils
-|-- other project files and folders
-```
-
-
-
-
-# Rough
-
-## Text indexing
-
-How Text Index Works:
-### Tokenization:
-When you create a text index, MongoDB tokenizes the text in the specified fields. Tokenization involves breaking down the text into individual words or tokens.
-
-### Stemming:
-MongoDB also applies stemming during text indexing. Stemming reduces words to their root or base form, so variations of a word (e.g., "running" and "ran") are treated as the same.
-
-### Search Functionality:
-Once the text index is created, you can use the $text operator in queries to perform text searches. For example, you might use queries like { $text: { $search: 'keyword' } } to find documents containing a specific keyword in the indexed fields.
-
