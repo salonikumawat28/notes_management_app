@@ -1,16 +1,43 @@
-import { useState } from "react";
 import "../css/SignUp.css";
 import apiClient from "../apiClient";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
 import config from "../configs/config";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+
+const validationSchema = Yup.object({
+  name: Yup.string()
+    .min(3, "Name must have at least 3 characters")
+    .max(255, "Name must have at most 255 characters")
+    .matches(/^[a-zA-Z\s]+$/, "Only alphabets and spaces are allowed")
+    .required("Name is required"),
+  email: Yup.string()
+    .email("Invalid email address")
+    .min(5, "Email must be at least 5 characters")
+    .max(255, "Email must be at most 255 characters")
+    .required("Email is required"),
+  password: Yup.string()
+    .min(8, "Password must be at least 8 characters")
+    .max(255, "Password must be at most 255 characters")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+      "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character"
+    )
+    .required("Password is required"),
+});
+
+const initialValues = {
+  name: "",
+  email: "",
+  password: "",
+};
 
 function SignUp() {
   const { setAuthToken } = useAuthContext();
-  const [newUser, setNewUser] = useState({ name: "", email: "", password: "" });
 
-  async function signUpUser(event) {
-    event.preventDefault();
+  async function signUpUser(newUser) {
+    console.log("New user is: ", newUser);
 
     try {
       const response = await apiClient.post(
@@ -26,54 +53,41 @@ function SignUp() {
     }
   }
 
-  function onNameChange(event) {
-    setNewUser({ ...newUser, name: event.target.value });
-  }
-
-  function onEmailChange(event) {
-    setNewUser({ ...newUser, email: event.target.value });
-  }
-
-  function onPasswordChange(event) {
-    setNewUser({ ...newUser, password: event.target.value });
-  }
-
   return (
     <div className="signup">
-      <form onSubmit={signUpUser}>
-        <label> Name: </label>
-        <input
-          type="text"
-          name="name"
-          value={newUser.name}
-          onChange={onNameChange}
-          required
-        />
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={signUpUser}
+      >
+        <Form>
+          <div>
+            <label htmlFor="name"> Name: </label>
+            <Field type="text" id="name" name="name" />
+            <ErrorMessage name="name" component="div" className="error" />
+          </div>
 
-        <label> Email: </label>
-        <input
-          type="email"
-          name="email"
-          value={newUser.email}
-          onChange={onEmailChange}
-          required
-        />
+          <div>
+            <label htmlFor="email"> Email: </label>
+            <Field type="email" id="email" name="email" />
+            <ErrorMessage name="email" component="div" className="error" />
+          </div>
 
-        <label> Password: </label>
-        <input
-          type="password"
-          name="password"
-          value={newUser.password}
-          onChange={onPasswordChange}
-          required
-        />
+          <div>
+            <label htmlFor="password"> Password: </label>
+            <Field type="password" id="password" name="password" />
+            <ErrorMessage name="password" component="div" className="error" />
+          </div>
 
-        <div className="Link">
-          <Link to="/login">Already have an account?</Link>
-        </div>
+          <div className="Link">
+            <Link to="/login">Already have an account?</Link>
+          </div>
 
-        <button type="submit">Sign Up</button>
-      </form>
+          <div>
+            <button type="submit">Sign Up</button>
+          </div>
+        </Form>
+      </Formik>
     </div>
   );
 }

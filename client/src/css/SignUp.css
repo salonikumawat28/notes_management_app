@@ -54,3 +54,7 @@
     border-radius: 5px;
     cursor: pointer;
 }
+.error {
+    color: red;
+    margin-top: 5px; /* Optional: Add some spacing */
+}
