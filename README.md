@@ -556,6 +556,16 @@ curl -X DELETE http://localhost:9000/api/notes/$NOTE_ID -H "Authorization: Beare
 </td>
 </tr>
 </table>
+
+## FrontEnd Server
+Here are the following ways user can communicate with the notes management app:
+1. If user is not authenticated, user can go to signup page at http://localhost:3000/signup, and to login page at http://localhost:3000/login.
+2. User can submit signup form to create account and submit login form to log into the account.
+3. If user is authenticated, user will see the authenticated home page irrespective of the URL.
+4. In authenticated page, user can see the UI to create a new note. If user clicks on it, the UI will expand and user can add title and content of the note. When user moves out of the create new note UI, the note is automatically saved.
+5. In authenicated page, user can see the UI with all the notes of the user. When user click on any note, the note will open in extended mode as a popover. User can edit this opened note and it automatically gets saved when user clicks out of this UI.
+6. User can log out of the application by clicking on the Logout button in the header UI.
+
 # Rough
 # Creating quickstart projects
 
