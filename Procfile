@@ -1,1 +1,1 @@
-worker: cd server && npm start
+worker: cd server && npm install && npm start
