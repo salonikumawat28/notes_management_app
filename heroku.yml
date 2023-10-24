@@ -1,0 +1,4 @@
+build:
+  nodejs: 12
+  paths:
+    - 'server/'

@@ -2,6 +2,10 @@
 
 Notes Management App is a one stop solution to create, update and view your notes at one place.
 
+# Live links
+FrontEnd: https://notes-management-app-client-bcgoqllgv-saloni-kumawats-projects.vercel.app/
+BackEnd: 
+
 # Design and Architecture
 ## Backend
 Backend is designed in ExpressJS. We have leveraged common web design principles including REST APIs, stateless server, modularized code etc. Here is how request flow looks like:
@@ -70,24 +74,48 @@ Here is a brief explanation of the FrontEnd structure:
 8. **NotesContext**: Consolidated place where notes data is present. This data is also hooked to React state and thus re-renders all the UI components users whenever notes data changes. This magic allows auto-populating of new note in the notes list when added from `CreateNote` component.
 9. **NotesManager**: NotesManager component is responsible to show `CreateNote` component to create new note, `NotesList` to show list of notes, `NotesDetail` to show a specific note which can then be edited.
 
-# Project setup
+# Development - Quick start
 ## Github repo clone
 ```
 git clone https://github.com/salonikumawat28/notes_management_app.git
 cd notes_management_app
 ```
-## Start FrontEnd Server
+## Start FrontEnd Server locally
 ```
 npm install
 npm start
 ```
 Server can be accessed at `http://localhost:3000`
-## Start BackEnd Server
+## Start BackEnd Server locally
 ```
 npm install
 npm start
 ```
 Server can be accessed at `http://localhost:9000`
+
+## Deploy FrontEnd
+We are deploying FrontEnd using vercel:
+First time deploy:
+```
+cd client
+npm install -g vercel
+vercel
+<Follow instructions on commandline>
+```
+Following above commands, you should get response like:
+```
+🔗  Linked to saloni-kumawats-projects/notes-management-app-client (created .vercel and added it to .gitignore)
+🔍  Inspect: https://vercel.com/saloni-kumawats-projects/notes-management-app-client/5rLkTNSXF4NesTcKrM2Xj6DJWoTp [1s]
+✅  Preview: https://notes-management-app-client-bcgoqllgv-saloni-kumawats-projects.vercel.app [1s]
+📝  Deployed to production. Run `vercel --prod` to overwrite later (https://vercel.link/2F).
+💡  To change the domain or build command, go to https://vercel.com/saloni-kumawats-projects/notes-management-app-client/settings
+```
+
+To overrite the deployment, run:
+```
+vercel --prod
+```
+## Deploy backend
 
 # App Usage
 We can communicate with the App by accessing FrontEnd via browser or Backend via CURL commands.
