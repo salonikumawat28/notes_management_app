@@ -4,7 +4,7 @@ Notes Management App is a one stop solution to create, update and view your note
 
 # App links
 ## FrontEnd: 
-Prod URL: https://notes-management-app-client-n2753k126-saloni-kumawats-projects.vercel.app
+Prod URL: https://notes-management-app-client-fkd9cddkz-saloni-kumawats-projects.vercel.app
 
 Dev URL: http://localhost:3000/
 
@@ -655,6 +655,8 @@ Following above commands, you should get response like:
 📝  Deployed to production. Run `vercel --prod` to overwrite later (https://vercel.link/2F).
 💡  To change the domain or build command, go to https://vercel.com/saloni-kumawats-projects/notes-management-app-client/settings
 ```
+
+If it fails on `npm install` command, then in browser login to vercel and go to your project -> settings and then in build settings, override the install command to `npm install --force`
 
 To overrite the deployment, run:
 ```
