@@ -32,10 +32,11 @@ function Login() {
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
-    onSubmit: { login },
+    onSubmit: login,
   });
 
   async function login(userCredentials) {
+    console.log("Calling login")
     try {
       const response = await apiClient.post(
         config.BACKEND_URL + "api/v1/auth/login/",

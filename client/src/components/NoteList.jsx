@@ -8,7 +8,7 @@ function NoteList({ onNoteClick }) {
   const { notes } = useNotesContext();
 
   return (
-    <div>
+    <div className="note-list">
       {notes.length === 0 ? (
         <EmptyNotesIndicator />
       ) : (
