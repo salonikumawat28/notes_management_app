@@ -2,7 +2,7 @@
 
 Notes Management App is a one stop solution to create, update and view your notes at one place.
 
-# Live links
+# App links
 ## FrontEnd: 
 Prod URL: https://notes-management-app-client-n2753k126-saloni-kumawats-projects.vercel.app
 
@@ -53,12 +53,16 @@ This is the schema we currently have:
 8. `title` and `content` are _text indexed_ in `Note` collection which makes sub-string search fast in notes. We will discuss this in further sections
 ### Why this schema? Alternatives and Tradeoffs
 There were 3 potential schema choices in front:
+
 **Approach 1 - Embedding:**
 In this approach, we keep all notes of the user along with user in a single collection. i.e. We can create a collection say `UserNotes` with fields like `_id`, `name`, `email`, `password`, `notes` where `notes` is array of notes of the user. This is simple approach and good for read-heavy workloads but this approach may lead to document growth and potential data duplication. Example: Once we add feature of sharing notes with other users, we have to duplicate same note in all the users collections.
+
 **Approach 2 - References with Array of Note IDs:**
-In this approach, we modify the approach 1 and keep the array of note ids in the `user` collection and the actual notes stay in a separate collection. i.e. Note is not aware of its author but User is aware of all of its notes. This appoach separates the data concerns, address note duplicity problem but this approach might require multiple queries for a result. For example, to search a text in all the notes of a user, we first need to get all the note ids of the user and then query those notes with the search tex.t
+In this approach, we modify the approach 1 and keep the array of note ids in the `user` collection and the actual notes stay in a separate collection. i.e. Note is not aware of its author but User is aware of all of its notes. This appoach separates the data concerns, address note duplicity problem but this approach might require multiple queries for a result. For example, to search a text in all the notes of a user, we first need to get all the note ids of the user and then query those notes with the search text.
+
 **Approach 3 - References with Author Field:**
 In this approach, `user` collection is not aware of the note it owns. Instead we do opposite of approach 2 i.e. Each note document has the user id. This approach doesn't result in multiple queries for text search and other queries which we generally use. **Because of these reasons, we are using Approach 3.**
+
 ### Text indexing - What and Why?
 Searching a small string within a large string is a time consuming task. We have a search feature where user can search for a text and we should show the notes which has that seached text and the results should be shown in sorted order of search rank. Best approach to save time consumed in search is to _text index_ the fields to be searched. 
 As part of text indexing, MongoDB does following:
