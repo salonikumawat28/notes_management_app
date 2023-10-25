@@ -43,7 +43,7 @@ function SignUp() {
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
-    onSubmit: { signUpUser },
+    onSubmit: signUpUser,
   });
 
   async function signUpUser(newUser) {
