@@ -14,6 +14,9 @@ https://notes-management-app-server-d246095aa0a9.herokuapp.com/
 
 Dev URL: http://localhost:9000/
 
+## Existing credentials
+You can create your own account by going to signup in FrontEnd or calling `signup` API in backend. Alternatively, you can use `test5@test.com` and `Test@1234` to login.
+
 # Design and Architecture
 ## Backend
 Backend is designed in ExpressJS. We have leveraged common web design principles including REST APIs, stateless server, modularized code etc. Here is how request flow looks like:
